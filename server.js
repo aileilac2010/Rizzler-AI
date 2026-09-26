@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import OpenAI from "openai";
 import path from "path";
 import { fileURLToPath } from "url";
+import crypto from "crypto";
 
 dotenv.config();
 
@@ -25,7 +26,11 @@ const openai = new OpenAI({
 // CONFIGURAÇÃO
 // ==========================================
 
-app.use(express.json({ limit: "25mb" }));
+app.use(
+    express.json({
+        limit: "25mb"
+    })
+);
 
 app.use(
     express.static(
@@ -33,65 +38,32 @@ app.use(
     )
 );
 
-app.get("/", (req, res) => {
-
-    res.sendFile(
-        path.join(
-            __dirname,
-            "public",
-            "index.html"
-        )
-    );
-
-});
 
 // ==========================================
-// TESTE
+// MEMÓRIA
 // ==========================================
 
-app.get("/api/test", async (req, res) => {
+// Cada conversationId terá o seu próprio histórico.
+//
+// Exemplo:
+//
+// conversations = {
+//   "abc123": [
+//      { role: "user", content: "..." },
+//      { role: "assistant", content: "..." }
+//   ]
+// }
 
-    try {
+const conversations = new Map();
 
-        const response =
-            await openai.responses.create({
 
-                model:
-                    "openai/gpt-oss-20b",
+// Quantas mensagens anteriores queremos
+// enviar para a IA.
+//
+// 20 mensagens = 10 trocas de conversa.
 
-                input:
-                    "Responde apenas: Rizzler AI está funcionando!"
+const MAX_HISTORY = 20;
 
-            });
-
-        res.json({
-
-            success: true,
-
-            response:
-                response.output_text
-
-        });
-
-    } catch (error) {
-
-        console.error(
-            "Erro no teste:",
-            error
-        );
-
-        res.status(500).json({
-
-            success: false,
-
-            error:
-                error.message
-
-        });
-
-    }
-
-});
 
 // ==========================================
 // ESTILOS
@@ -156,8 +128,9 @@ Usa frases curtas e fáceis de enviar.
 
 };
 
+
 // ==========================================
-// INSTRUÇÕES
+// INSTRUÇÕES DO RIZZLER
 // ==========================================
 
 function createInstructions(style) {
@@ -171,47 +144,75 @@ o utilizador com conversas e mensagens.
 
 A tua língua principal é português.
 
-Fala de maneira natural e descontraída.
+Fala de maneira natural, descontraída
+e humana.
 
-Nunca fales como um assistente corporativo.
+Não fales como um assistente corporativo.
 
 ${styles[style] || styles.natural}
+
+
+========================================
+MEMÓRIA DA CONVERSA
+========================================
+
+Tu tens acesso ao histórico desta
+conversa.
+
+Usa o histórico para compreender:
+
+- o que o utilizador já explicou;
+- quem são as pessoas mencionadas;
+- o contexto da conversa;
+- o que já foi sugerido;
+- preferências que o utilizador demonstrou;
+- mensagens anteriores;
+- referências como "ela", "ele", "isso",
+  "aquela mensagem", etc.
+
+Não finjas que esqueceste algo que está
+presente no histórico.
+
+Não repitas perguntas que já foram
+respondidas.
+
+Se o utilizador disser "faz diferente",
+entende que está a pedir uma alteração
+à sugestão anterior.
+
 
 ========================================
 QUANDO HOUVER UMA IMAGEM
 ========================================
 
-Se receberes um screenshot de uma
-conversa:
+Se receberes um screenshot:
 
 1. Lê cuidadosamente o texto visível.
 
-2. Identifica quem parece estar a falar.
+2. Identifica a ordem das mensagens.
 
-3. Observa a ordem das mensagens.
+3. Tenta compreender quem está a falar.
 
-4. Usa emojis, pontuação e contexto
-   visível para compreender o tom.
+4. Observa emojis, pontuação e contexto.
 
-5. Não inventes mensagens que não
-   aparecem na imagem.
+5. Não inventes mensagens que não aparecem.
 
 6. Se alguma parte estiver ilegível,
-   diz claramente que não consegues
-   ter certeza daquela parte.
+   deixa claro que não consegues ter certeza.
 
-7. Usa a conversa da imagem como
-   contexto para sugerir respostas.
+7. Usa a imagem juntamente com o histórico
+   da conversa.
+
 
 ========================================
-RESPOSTAS
+SUGESTÕES
 ========================================
 
 Quando o utilizador pedir ajuda para
 responder uma conversa, normalmente
-dá 3 opções diferentes.
+oferece 3 opções.
 
-Formato:
+Exemplo:
 
 🔥 Opção 1
 "mensagem"
@@ -222,125 +223,121 @@ Formato:
 😂 Opção 3
 "mensagem"
 
-As opções devem ser realmente
-diferentes.
+As opções devem ser realmente diferentes.
 
-Não repitas a mesma frase mudando
-apenas algumas palavras.
-
-Mantém as respostas curtas e naturais.
-
-Não forces romance ou flerte quando
-o contexto não indicar isso.
+Não forces flerte quando o contexto
+não indicar isso.
 
 Mantém o conteúdo apropriado e não sexual.
+
+Se o utilizador simplesmente estiver
+a conversar contigo, responde normalmente
+sem obrigatoriamente criar três opções.
 
 `;
 
 }
 
+
 // ==========================================
-// CHAT
+// CRIAR CONVERSA
 // ==========================================
 
-app.post("/api/chat", async (req, res) => {
+function createConversation() {
 
-    try {
+    const id =
+        crypto.randomUUID();
 
-        const {
-            message,
-            style = "natural",
-            image
-        } = req.body;
+    conversations.set(
+        id,
+        []
+    );
 
+    return id;
 
-        // ==================================
-        // VALIDAR
-        // ==================================
-
-        if (
-            (!message || !message.trim()) &&
-            !image
-        ) {
-
-            return res.status(400).json({
-
-                success: false,
-
-                error:
-                    "Envia uma mensagem ou uma imagem."
-
-            });
-
-        }
+}
 
 
-        // ==================================
-        // CASO TENHA IMAGEM
-        // ==================================
+// ==========================================
+// OBTER CONVERSA
+// ==========================================
 
-        if (image) {
+function getConversation(id) {
 
-            console.log(
-                "📸 Imagem recebida pelo Rizzler."
-            );
+    if (!id) {
+
+        const newId =
+            createConversation();
+
+        return {
+            id: newId,
+            history:
+                conversations.get(newId)
+        };
+
+    }
 
 
-            const text =
-                message?.trim() ||
-                "Analisa este screenshot de conversa e ajuda-me a responder.";
+    if (!conversations.has(id)) {
 
+        conversations.set(
+            id,
+            []
+        );
+
+    }
+
+
+    return {
+        id,
+        history:
+            conversations.get(id)
+    };
+
+}
+
+
+// ==========================================
+// LIMPAR HISTÓRICO
+// ==========================================
+
+function trimHistory(history) {
+
+    while (
+        history.length >
+        MAX_HISTORY
+    ) {
+
+        history.shift();
+
+    }
+
+}
+
+
+// ==========================================
+// TESTE
+// ==========================================
+
+app.get(
+    "/api/test",
+    async (req, res) => {
+
+        try {
 
             const response =
                 await openai.responses.create({
 
                     model:
-                        "qwen/qwen3.8-27b",
+                        "openai/gpt-oss-20b",
 
-                    instructions:
-                        createInstructions(style),
-
-                    input: [
-
-                        {
-
-                            role: "user",
-
-                            content: [
-
-                                {
-
-                                    type:
-                                        "input_text",
-
-                                    text:
-                                        text
-
-                                },
-
-                                {
-
-                                    type:
-                                        "input_image",
-
-                                    detail:
-                                        "auto",
-
-                                    image_url:
-                                        image
-
-                                }
-
-                            ]
-
-                        }
-
-                    ]
+                    input:
+                        "Responde apenas: Rizzler AI está funcionando!"
 
                 });
 
 
-            return res.json({
+            res.json({
 
                 success: true,
 
@@ -349,59 +346,300 @@ app.post("/api/chat", async (req, res) => {
 
             });
 
+        } catch (error) {
+
+            console.error(
+                "Erro no teste:",
+                error
+            );
+
+            res.status(500).json({
+
+                success: false,
+
+                error:
+                    error.message
+
+            });
+
         }
 
+    }
+);
 
-        // ==================================
-        // APENAS TEXTO
-        // ==================================
 
-        const response =
-            await openai.responses.create({
+// ==========================================
+// CHAT
+// ==========================================
 
-                model:
-                    "openai/gpt-oss-20b",
+app.post(
+    "/api/chat",
+    async (req, res) => {
 
-                instructions:
-                    createInstructions(style),
+        try {
 
-                input:
-                    message.trim()
+            const {
+                message,
+                style = "natural",
+                image,
+                conversationId
+            } = req.body;
+
+
+            // ==================================
+            // CONVERSA
+            // ==================================
+
+            const conversation =
+                getConversation(
+                    conversationId
+                );
+
+            const history =
+                conversation.history;
+
+
+            // ==================================
+            // VALIDAR
+            // ==================================
+
+            if (
+                (!message ||
+                    !message.trim()) &&
+                !image
+            ) {
+
+                return res.status(400).json({
+
+                    success: false,
+
+                    error:
+                        "Envia uma mensagem ou uma imagem."
+
+                });
+
+            }
+
+
+            // ==================================
+            // USUÁRIO
+            // ==================================
+
+            const userText =
+                message?.trim() ||
+                "Analisa este screenshot de conversa e ajuda-me a responder.";
+
+
+            // ==================================
+            // CONSTRUIR CONTEÚDO DO USUÁRIO
+            // ==================================
+
+            let userContent;
+
+
+            if (image) {
+
+                userContent = [
+
+                    {
+                        type:
+                            "input_text",
+
+                        text:
+                            userText
+                    },
+
+                    {
+                        type:
+                            "input_image",
+
+                        detail:
+                            "auto",
+
+                        image_url:
+                            image
+                    }
+
+                ];
+
+            } else {
+
+                userContent =
+                    userText;
+
+            }
+
+
+            // ==================================
+            // ADICIONAR AO HISTÓRICO
+            // ==================================
+
+            history.push({
+
+                role:
+                    "user",
+
+                content:
+                    userContent
 
             });
 
 
+            trimHistory(
+                history
+            );
+
+
+            // ==================================
+            // MODELO
+            // ==================================
+
+            const model =
+                image
+                    ? "qwen/qwen3.8-27b"
+                    : "openai/gpt-oss-20b";
+
+
+            console.log(
+                `🧠 Rizzler | conversa: ${conversation.id} | histórico: ${history.length} | imagem: ${!!image}`
+            );
+
+
+            // ==================================
+            // IA
+            // ==================================
+
+            const response =
+                await openai.responses.create({
+
+                    model:
+
+                        model,
+
+                    instructions:
+
+                        createInstructions(
+                            style
+                        ),
+
+                    input:
+
+                        history
+
+                });
+
+
+            const aiResponse =
+                response.output_text;
+
+
+            // ==================================
+            // GUARDAR RESPOSTA
+            // ==================================
+
+            history.push({
+
+                role:
+                    "assistant",
+
+                content:
+                    aiResponse
+
+            });
+
+
+            trimHistory(
+                history
+            );
+
+
+            // ==================================
+            // RESPOSTA
+            // ==================================
+
+            res.json({
+
+                success:
+                    true,
+
+                response:
+                    aiResponse,
+
+                conversationId:
+                    conversation.id
+
+            });
+
+
+        } catch (error) {
+
+            console.error(
+                "❌ Erro no Rizzler:",
+                error
+            );
+
+
+            res.status(500).json({
+
+                success:
+                    false,
+
+                error:
+                    error.message ||
+                    "Erro ao contactar a IA."
+
+            });
+
+        }
+
+    }
+);
+
+
+// ==========================================
+// LIMPAR UMA CONVERSA
+// ==========================================
+
+app.post(
+    "/api/clear",
+    (req, res) => {
+
+        const {
+            conversationId
+        } = req.body;
+
+
+        if (
+            conversationId &&
+            conversations.has(
+                conversationId
+            )
+        ) {
+
+            conversations.delete(
+                conversationId
+            );
+
+        }
+
+
+        const newId =
+            createConversation();
+
+
         res.json({
 
-            success: true,
+            success:
+                true,
 
-            response:
-                response.output_text
-
-        });
-
-
-    } catch (error) {
-
-        console.error(
-            "Erro no Rizzler:",
-            error
-        );
-
-
-        res.status(500).json({
-
-            success: false,
-
-            error:
-                error.message ||
-                "Erro ao contactar a IA."
+            conversationId:
+                newId
 
         });
 
     }
+);
 
-});
 
 // ==========================================
 // SERVIDOR
