@@ -45,6 +45,57 @@ app.get("/api/test", async (req, res) => {
         });
     }
 });
+app.post("/api/chat", async (req, res) => {
+    try {
+        const { message } = req.body;
+
+        if (!message) {
+            return res.status(400).json({
+                success: false,
+                error: "Mensagem não fornecida."
+            });
+        }
+
+        const response = await openai.responses.create({
+            model: "openai/gpt-oss-20b",
+            instructions: `
+Tu és o Rizzler AI.
+
+És uma IA especializada em ajudar pessoas
+a conversar e responder mensagens.
+
+Responde sempre em português.
+
+O teu jeito deve ser:
+- natural
+- descontraído
+- inteligente
+- divertido
+- direto
+
+Não pareças um assistente corporativo.
+Fala como alguém que realmente entende conversas.
+
+Ajuda o utilizador a criar respostas naturais,
+mas não inventes contexto que não foi fornecido.
+            `,
+            input: message
+        });
+
+        res.json({
+            success: true,
+            response: response.output_text
+        });
+
+    } catch (error) {
+        console.error("Erro no Rizzler:", error);
+
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+});
 app.listen(PORT, () => {
     console.log(`Rizzler AI está rodando na porta ${PORT}`);
 });
