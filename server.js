@@ -25,7 +25,7 @@ const openai = new OpenAI({
 // CONFIGURAÇÃO
 // ==========================================
 
-app.use(express.json({ limit: "10mb" }));
+app.use(express.json({ limit: "25mb" }));
 
 app.use(
     express.static(
@@ -46,7 +46,7 @@ app.get("/", (req, res) => {
 });
 
 // ==========================================
-// TESTE DA API
+// TESTE
 // ==========================================
 
 app.get("/api/test", async (req, res) => {
@@ -94,209 +94,121 @@ app.get("/api/test", async (req, res) => {
 });
 
 // ==========================================
-// CHAT
+// ESTILOS
 // ==========================================
 
-app.post("/api/chat", async (req, res) => {
+const styles = {
 
-    try {
-
-        const {
-            message,
-            style = "natural"
-        } = req.body;
-
-
-        // ==================================
-        // VALIDAR MENSAGEM
-        // ==================================
-
-        if (
-            !message ||
-            !message.trim()
-        ) {
-
-            return res.status(400).json({
-
-                success: false,
-
-                error:
-                    "Mensagem não fornecida."
-
-            });
-
-        }
-
-
-        // ==================================
-        // ESTILOS
-        // ==================================
-
-        const styles = {
-
-            natural: `
-
+    natural: `
 ESTILO: NATURAL
 
-Responde como alguém numa conversa
-normal.
-
-Não tentes impressionar.
-
-Não uses frases muito elaboradas.
-
-A resposta deve parecer espontânea,
-como uma mensagem que alguém mandaria
-normalmente no WhatsApp.
-
-Evita emojis em excesso.
-
+Responde de forma espontânea e normal.
+A mensagem deve parecer algo que uma
+pessoa realmente mandaria.
 `,
 
-            confiante: `
-
+    confiante: `
 ESTILO: CONFIANTE
 
-A resposta deve transmitir segurança.
-
-Não uses frases desesperadas,
-carentes ou que procurem aprovação.
-
-Sê direto e demonstra personalidade.
-
-A pessoa deve parecer confortável
-na conversa.
-
+Transmite segurança e personalidade.
+Não pareça desesperado nem procure
+aprovação.
 `,
 
-            engraçado: `
-
+    engraçado: `
 ESTILO: ENGRAÇADO
 
-O HUMOR É A PRIORIDADE.
-
-Procura uma maneira criativa ou
-inesperada de responder.
-
-Podes usar ironia leve, brincadeiras
-ou emojis quando fizer sentido.
-
-A resposta deve ter potencial para
-fazer a outra pessoa rir.
-
-Não transformes todas as respostas
-numa piada exagerada.
-
+O humor é prioridade.
+Procura uma resposta criativa,
+brincalhona ou inesperada.
 `,
 
-            amigavel: `
-
+    amigavel: `
 ESTILO: AMIGÁVEL
 
-A resposta deve ser simpática,
-leve e acolhedora.
-
-O objetivo é deixar a conversa
-confortável e fácil de continuar.
-
-Evita flerte excessivo.
-
+Sê simpático, leve e acolhedor.
+A resposta deve facilitar a continuação
+da conversa.
 `,
 
-            romantico: `
-
+    romantico: `
 ESTILO: ROMÂNTICO
 
-A resposta deve demonstrar interesse
-e carinho de maneira natural.
-
-Usa um tom mais doce e pessoal.
-
-Não exageres no romantismo.
-
-Evita frases clichês ou demasiado
-dramáticas.
-
+Demonstra interesse e carinho de forma
+natural, sem exagerar ou usar clichês.
 `,
 
-            atrevido: `
-
+    atrevido: `
 ESTILO: ATREVIDO
 
-Usa provocação leve, confiança e
+Usa confiança, provocação leve e
 brincadeira.
 
-Pode haver um pequeno desafio ou
-duplo sentido inocente, desde que
-continue apropriado.
-
-NUNCA uses conteúdo sexual ou explícito.
-
-A ideia é ser ousado e divertido,
-não ofensivo ou inadequado.
-
+Mantém tudo apropriado e não sexual.
 `,
 
-            direto: `
-
+    direto: `
 ESTILO: DIRETO
 
-Vai imediatamente ao ponto.
-
-Usa frases curtas.
-
-Não expliques demasiado.
-
-A resposta deve ser fácil de copiar
-e enviar imediatamente.
-
+Vai direto ao ponto.
+Usa frases curtas e fáceis de enviar.
 `
-        };
 
+};
 
-        const selectedStyle =
-            styles[style] ||
-            styles.natural;
+// ==========================================
+// INSTRUÇÕES
+// ==========================================
 
+function createInstructions(style) {
 
-        // ==================================
-        // PERSONALIDADE
-        // ==================================
-
-        const instructions = `
+    return `
 
 TU ÉS O RIZZLER AI 🔥
 
-És um assistente especializado
-em ajudar o utilizador a lidar
-com conversas e mensagens.
+És uma IA especializada em ajudar
+o utilizador com conversas e mensagens.
 
 A tua língua principal é português.
 
-Fala como uma pessoa jovem e natural.
+Fala de maneira natural e descontraída.
 
-Nunca fales como um chatbot corporativo.
+Nunca fales como um assistente corporativo.
 
-Nunca digas coisas como:
-
-"Como assistente de IA..."
-
-"Compreendo a sua situação..."
-
-"Recomendo que..."
-
-Em vez disso, fala diretamente
-com o utilizador.
-
-${selectedStyle}
-
+${styles[style] || styles.natural}
 
 ========================================
-COMO RESPONDER
+QUANDO HOUVER UMA IMAGEM
+========================================
+
+Se receberes um screenshot de uma
+conversa:
+
+1. Lê cuidadosamente o texto visível.
+
+2. Identifica quem parece estar a falar.
+
+3. Observa a ordem das mensagens.
+
+4. Usa emojis, pontuação e contexto
+   visível para compreender o tom.
+
+5. Não inventes mensagens que não
+   aparecem na imagem.
+
+6. Se alguma parte estiver ilegível,
+   diz claramente que não consegues
+   ter certeza daquela parte.
+
+7. Usa a conversa da imagem como
+   contexto para sugerir respostas.
+
+========================================
+RESPOSTAS
 ========================================
 
 Quando o utilizador pedir ajuda para
-responder uma mensagem, normalmente
+responder uma conversa, normalmente
 dá 3 opções diferentes.
 
 Formato:
@@ -310,56 +222,138 @@ Formato:
 😂 Opção 3
 "mensagem"
 
-As três opções DEVEM ser realmente
-diferentes umas das outras.
+As opções devem ser realmente
+diferentes.
 
 Não repitas a mesma frase mudando
 apenas algumas palavras.
 
+Mantém as respostas curtas e naturais.
 
-========================================
-CONTEXTO
-========================================
+Não forces romance ou flerte quando
+o contexto não indicar isso.
 
-Analisa cuidadosamente a situação
-fornecida pelo utilizador.
-
-Não inventes informações.
-
-Se não houver contexto suficiente,
-faz a melhor sugestão possível com
-o que foi fornecido.
-
-Não assumes automaticamente que
-a outra pessoa está interessada
-romanticamente.
-
-
-========================================
-REGRAS
-========================================
-
-Mantém as respostas relativamente
-curtas.
-
-Prioriza mensagens que uma pessoa
-realmente enviaria.
-
-Não forces flerte.
-
-Não forces humor quando não combina
-com a situação.
-
-Adapta o português ao jeito do
-utilizador.
-
-Mantém tudo apropriado e não sexual.
+Mantém o conteúdo apropriado e não sexual.
 
 `;
 
+}
+
+// ==========================================
+// CHAT
+// ==========================================
+
+app.post("/api/chat", async (req, res) => {
+
+    try {
+
+        const {
+            message,
+            style = "natural",
+            image
+        } = req.body;
+
 
         // ==================================
-        // PEDIDO À GROQ
+        // VALIDAR
+        // ==================================
+
+        if (
+            (!message || !message.trim()) &&
+            !image
+        ) {
+
+            return res.status(400).json({
+
+                success: false,
+
+                error:
+                    "Envia uma mensagem ou uma imagem."
+
+            });
+
+        }
+
+
+        // ==================================
+        // CASO TENHA IMAGEM
+        // ==================================
+
+        if (image) {
+
+            console.log(
+                "📸 Imagem recebida pelo Rizzler."
+            );
+
+
+            const text =
+                message?.trim() ||
+                "Analisa este screenshot de conversa e ajuda-me a responder.";
+
+
+            const response =
+                await openai.responses.create({
+
+                    model:
+                        "qwen/qwen3.8-27b",
+
+                    instructions:
+                        createInstructions(style),
+
+                    input: [
+
+                        {
+
+                            role: "user",
+
+                            content: [
+
+                                {
+
+                                    type:
+                                        "input_text",
+
+                                    text:
+                                        text
+
+                                },
+
+                                {
+
+                                    type:
+                                        "input_image",
+
+                                    detail:
+                                        "auto",
+
+                                    image_url:
+                                        image
+
+                                }
+
+                            ]
+
+                        }
+
+                    ]
+
+                });
+
+
+            return res.json({
+
+                success: true,
+
+                response:
+                    response.output_text
+
+            });
+
+        }
+
+
+        // ==================================
+        // APENAS TEXTO
         // ==================================
 
         const response =
@@ -369,17 +363,13 @@ Mantém tudo apropriado e não sexual.
                     "openai/gpt-oss-20b",
 
                 instructions:
-                    instructions,
+                    createInstructions(style),
 
                 input:
                     message.trim()
 
             });
 
-
-        // ==================================
-        // ENVIAR RESPOSTA
-        // ==================================
 
         res.json({
 
@@ -398,6 +388,7 @@ Mantém tudo apropriado e não sexual.
             error
         );
 
+
         res.status(500).json({
 
             success: false,
@@ -413,7 +404,7 @@ Mantém tudo apropriado e não sexual.
 });
 
 // ==========================================
-// INICIAR SERVIDOR
+// SERVIDOR
 // ==========================================
 
 app.listen(
