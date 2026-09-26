@@ -22,7 +22,7 @@ const openai = new OpenAI({
 });
 
 // ==========================================
-// CONFIGURAÇÕES
+// CONFIGURAÇÃO
 // ==========================================
 
 app.use(express.json({ limit: "10mb" }));
@@ -34,6 +34,7 @@ app.use(
 );
 
 app.get("/", (req, res) => {
+
     res.sendFile(
         path.join(
             __dirname,
@@ -41,10 +42,11 @@ app.get("/", (req, res) => {
             "index.html"
         )
     );
+
 });
 
 // ==========================================
-// TESTE
+// TESTE DA API
 // ==========================================
 
 app.get("/api/test", async (req, res) => {
@@ -54,15 +56,21 @@ app.get("/api/test", async (req, res) => {
         const response =
             await openai.responses.create({
 
-                model: "openai/gpt-oss-20b",
+                model:
+                    "openai/gpt-oss-20b",
 
                 input:
                     "Responde apenas: Rizzler AI está funcionando!"
+
             });
 
         res.json({
+
             success: true,
-            response: response.output_text
+
+            response:
+                response.output_text
+
         });
 
     } catch (error) {
@@ -73,8 +81,12 @@ app.get("/api/test", async (req, res) => {
         );
 
         res.status(500).json({
+
             success: false,
-            error: error.message
+
+            error:
+                error.message
+
         });
 
     }
@@ -82,7 +94,7 @@ app.get("/api/test", async (req, res) => {
 });
 
 // ==========================================
-// RIZZLER AI
+// CHAT
 // ==========================================
 
 app.post("/api/chat", async (req, res) => {
@@ -94,7 +106,10 @@ app.post("/api/chat", async (req, res) => {
             style = "natural"
         } = req.body;
 
-        // Verificar mensagem
+
+        // ==================================
+        // VALIDAR MENSAGEM
+        // ==================================
 
         if (
             !message ||
@@ -107,110 +122,184 @@ app.post("/api/chat", async (req, res) => {
 
                 error:
                     "Mensagem não fornecida."
+
             });
 
         }
 
+
         // ==================================
-        // PERSONALIDADES
+        // ESTILOS
         // ==================================
 
         const styles = {
 
             natural: `
-Responde de forma natural,
-descontraída e espontânea.
-            `,
+
+ESTILO: NATURAL
+
+Responde como alguém numa conversa
+normal.
+
+Não tentes impressionar.
+
+Não uses frases muito elaboradas.
+
+A resposta deve parecer espontânea,
+como uma mensagem que alguém mandaria
+normalmente no WhatsApp.
+
+Evita emojis em excesso.
+
+`,
 
             confiante: `
-Responde com confiança,
-sem parecer arrogante ou desesperado.
-            `,
+
+ESTILO: CONFIANTE
+
+A resposta deve transmitir segurança.
+
+Não uses frases desesperadas,
+carentes ou que procurem aprovação.
+
+Sê direto e demonstra personalidade.
+
+A pessoa deve parecer confortável
+na conversa.
+
+`,
 
             engraçado: `
-Usa humor e criatividade.
-A resposta deve parecer algo
-que uma pessoa realmente mandaria.
-            `,
+
+ESTILO: ENGRAÇADO
+
+O HUMOR É A PRIORIDADE.
+
+Procura uma maneira criativa ou
+inesperada de responder.
+
+Podes usar ironia leve, brincadeiras
+ou emojis quando fizer sentido.
+
+A resposta deve ter potencial para
+fazer a outra pessoa rir.
+
+Não transformes todas as respostas
+numa piada exagerada.
+
+`,
 
             amigavel: `
-Mantém um tom simpático,
-leve e fácil de continuar.
-            `,
+
+ESTILO: AMIGÁVEL
+
+A resposta deve ser simpática,
+leve e acolhedora.
+
+O objetivo é deixar a conversa
+confortável e fácil de continuar.
+
+Evita flerte excessivo.
+
+`,
 
             romantico: `
-Usa um tom carinhoso e interessado,
-mas sem exagerar ou parecer artificial.
-            `,
+
+ESTILO: ROMÂNTICO
+
+A resposta deve demonstrar interesse
+e carinho de maneira natural.
+
+Usa um tom mais doce e pessoal.
+
+Não exageres no romantismo.
+
+Evita frases clichês ou demasiado
+dramáticas.
+
+`,
 
             atrevido: `
-Usa provocação leve e brincalhona,
-sem conteúdo sexual ou explícito.
-            `,
+
+ESTILO: ATREVIDO
+
+Usa provocação leve, confiança e
+brincadeira.
+
+Pode haver um pequeno desafio ou
+duplo sentido inocente, desde que
+continue apropriado.
+
+NUNCA uses conteúdo sexual ou explícito.
+
+A ideia é ser ousado e divertido,
+não ofensivo ou inadequado.
+
+`,
 
             direto: `
-Vai direto ao ponto.
-Poucas palavras e sem enrolação.
-            `
+
+ESTILO: DIRETO
+
+Vai imediatamente ao ponto.
+
+Usa frases curtas.
+
+Não expliques demasiado.
+
+A resposta deve ser fácil de copiar
+e enviar imediatamente.
+
+`
         };
+
 
         const selectedStyle =
             styles[style] ||
             styles.natural;
 
+
         // ==================================
-        // INSTRUÇÕES DO RIZZLER
+        // PERSONALIDADE
         // ==================================
 
         const instructions = `
 
-Tu és o Rizzler AI 🔥.
+TU ÉS O RIZZLER AI 🔥
 
-És um especialista em ajudar
-o utilizador a comunicar melhor
-em conversas.
+És um assistente especializado
+em ajudar o utilizador a lidar
+com conversas e mensagens.
 
 A tua língua principal é português.
 
-O teu objetivo é ajudar o utilizador a:
+Fala como uma pessoa jovem e natural.
 
-- entender mensagens
-- interpretar o contexto
-- continuar conversas
-- pensar em respostas naturais
-- adaptar o tom das mensagens
-- evitar respostas estranhas ou forçadas
+Nunca fales como um chatbot corporativo.
+
+Nunca digas coisas como:
+
+"Como assistente de IA..."
+
+"Compreendo a sua situação..."
+
+"Recomendo que..."
+
+Em vez disso, fala diretamente
+com o utilizador.
 
 ${selectedStyle}
 
-REGRAS IMPORTANTES:
 
-1. Fala como uma pessoa normal.
+========================================
+COMO RESPONDER
+========================================
 
-2. Nunca uses linguagem corporativa.
+Quando o utilizador pedir ajuda para
+responder uma mensagem, normalmente
+dá 3 opções diferentes.
 
-3. Não inventes informações.
-
-4. Usa apenas o contexto fornecido.
-
-5. Se faltar contexto, deixa isso claro.
-
-6. Evita respostas demasiado longas.
-
-7. Não forces romance quando o contexto
-não indica interesse romântico.
-
-8. As sugestões devem parecer mensagens
-que uma pessoa realmente enviaria.
-
-9. Mantém o conteúdo apropriado
-e não sexual.
-
-QUANDO O UTILIZADOR PEDIR UMA RESPOSTA:
-
-Dá até 3 opções.
-
-Organiza assim:
+Formato:
 
 🔥 Opção 1
 "mensagem"
@@ -221,12 +310,53 @@ Organiza assim:
 😂 Opção 3
 "mensagem"
 
-Depois acrescenta uma frase curta
-explicando qual é a diferença entre elas.
+As três opções DEVEM ser realmente
+diferentes umas das outras.
 
-Não escrevas uma explicação enorme.
+Não repitas a mesma frase mudando
+apenas algumas palavras.
+
+
+========================================
+CONTEXTO
+========================================
+
+Analisa cuidadosamente a situação
+fornecida pelo utilizador.
+
+Não inventes informações.
+
+Se não houver contexto suficiente,
+faz a melhor sugestão possível com
+o que foi fornecido.
+
+Não assumes automaticamente que
+a outra pessoa está interessada
+romanticamente.
+
+
+========================================
+REGRAS
+========================================
+
+Mantém as respostas relativamente
+curtas.
+
+Prioriza mensagens que uma pessoa
+realmente enviaria.
+
+Não forces flerte.
+
+Não forces humor quando não combina
+com a situação.
+
+Adapta o português ao jeito do
+utilizador.
+
+Mantém tudo apropriado e não sexual.
 
 `;
+
 
         // ==================================
         // PEDIDO À GROQ
@@ -238,15 +368,17 @@ Não escrevas uma explicação enorme.
                 model:
                     "openai/gpt-oss-20b",
 
-                instructions,
+                instructions:
+                    instructions,
 
                 input:
                     message.trim()
 
             });
 
+
         // ==================================
-        // RESPOSTA
+        // ENVIAR RESPOSTA
         // ==================================
 
         res.json({
@@ -257,6 +389,7 @@ Não escrevas uma explicação enorme.
                 response.output_text
 
         });
+
 
     } catch (error) {
 
@@ -280,7 +413,7 @@ Não escrevas uma explicação enorme.
 });
 
 // ==========================================
-// SERVIDOR
+// INICIAR SERVIDOR
 // ==========================================
 
 app.listen(
