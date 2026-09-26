@@ -4,10 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Rizzler AI</title>
+    <title>Rizzler AI 🔥</title>
 
     <style>
-
         * {
             box-sizing: border-box;
             margin: 0;
@@ -15,9 +14,9 @@
         }
 
         body {
-            background: #0a0a0a;
-            color: #f5f5f5;
             font-family: Arial, Helvetica, sans-serif;
+            background: #0b0b0b;
+            color: #f5f5f5;
             height: 100vh;
             overflow: hidden;
         }
@@ -26,65 +25,54 @@
             height: 100vh;
             display: flex;
             flex-direction: column;
+            max-width: 900px;
+            margin: auto;
         }
 
-        /* =========================
-           HEADER
-        ========================= */
+        /* HEADER */
 
         header {
-            height: 65px;
+            padding: 20px;
             border-bottom: 1px solid #222;
-            display: flex;
-            align-items: center;
-            padding: 0 22px;
-            background: #0a0a0a;
-            flex-shrink: 0;
+            text-align: center;
         }
 
-        .logo {
+        header h1 {
             font-size: 21px;
-            font-weight: bold;
-            letter-spacing: -0.5px;
+            font-weight: 700;
         }
 
-        .status {
-            margin-left: 12px;
-            font-size: 12px;
+        header p {
             color: #777;
+            font-size: 13px;
+            margin-top: 4px;
         }
 
-        /* =========================
-           CHAT
-        ========================= */
+        /* CHAT */
 
         #chat {
             flex: 1;
             overflow-y: auto;
-            padding: 30px 20px 190px;
-            scroll-behavior: smooth;
+            padding: 25px 18px;
         }
 
         .welcome {
-            max-width: 700px;
-            margin: 90px auto 0;
             text-align: center;
+            color: #777;
+            margin-top: 20vh;
+            font-size: 15px;
         }
 
-        .welcome h1 {
-            font-size: 34px;
-            margin-bottom: 12px;
-        }
-
-        .welcome p {
-            color: #888;
-            font-size: 16px;
+        .welcome strong {
+            display: block;
+            color: #eee;
+            font-size: 24px;
+            margin-bottom: 8px;
         }
 
         .message {
-            max-width: 760px;
-            margin: 0 auto 20px;
             display: flex;
+            margin-bottom: 18px;
         }
 
         .message.user {
@@ -92,172 +80,80 @@
         }
 
         .bubble {
-            max-width: 75%;
-            padding: 13px 17px;
+            max-width: 78%;
+            padding: 12px 15px;
             border-radius: 18px;
             line-height: 1.5;
             font-size: 15px;
             white-space: pre-wrap;
+            word-wrap: break-word;
         }
 
-        .user .bubble {
-            background: #242424;
-            color: #fff;
+        .message.user .bubble {
+            background: #252525;
             border-bottom-right-radius: 5px;
         }
 
-        .ai .bubble {
+        .message.ai .bubble {
             background: transparent;
+            padding-left: 3px;
             color: #e8e8e8;
-            padding-left: 0;
-            border-bottom-left-radius: 5px;
         }
 
-        /* =========================
-           IMAGEM NA MENSAGEM
-        ========================= */
-
-        .message-image {
-            display: block;
-            max-width: 260px;
-            max-height: 300px;
-            object-fit: contain;
+        .image-message {
+            max-width: 240px;
             border-radius: 14px;
+            display: block;
             margin-bottom: 8px;
         }
 
-        .image-label {
-            font-size: 11px;
-            color: #777;
-            margin-bottom: 5px;
-        }
-
-        /* =========================
-           TYPING
-        ========================= */
-
-        .typing {
-            display: flex;
-            gap: 4px;
-            align-items: center;
-            height: 20px;
-        }
-
-        .typing span {
-            width: 5px;
-            height: 5px;
-            background: #888;
-            border-radius: 50%;
-            animation: typing 1s infinite;
-        }
-
-        .typing span:nth-child(2) {
-            animation-delay: 0.15s;
-        }
-
-        .typing span:nth-child(3) {
-            animation-delay: 0.3s;
-        }
-
-        @keyframes typing {
-
-            0%, 60%, 100% {
-                opacity: 0.3;
-                transform: translateY(0);
-            }
-
-            30% {
-                opacity: 1;
-                transform: translateY(-3px);
-            }
-
-        }
-
-        /* =========================
-           INPUT AREA
-        ========================= */
-
-        .input-area {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 12px 20px 20px;
-
-            background: linear-gradient(
-                transparent,
-                #0a0a0a 25%
-            );
-        }
-
-        /* =========================
-           ESTILOS
-        ========================= */
+        /* STYLES */
 
         .styles {
-            max-width: 760px;
-            margin: 0 auto 9px;
-
             display: flex;
-            gap: 7px;
-
+            gap: 8px;
             overflow-x: auto;
-
-            scrollbar-width: none;
+            padding: 10px 15px;
+            border-top: 1px solid #1c1c1c;
         }
 
         .styles::-webkit-scrollbar {
             display: none;
         }
 
-        .style-button {
+        .style-btn {
             flex-shrink: 0;
-
             border: 1px solid #292929;
-            background: #121212;
-            color: #888;
-
-            padding: 7px 12px;
-
+            background: #111;
+            color: #aaa;
             border-radius: 20px;
-
-            font-size: 12px;
-
+            padding: 8px 13px;
             cursor: pointer;
-
-            transition:
-                background 0.2s,
-                color 0.2s,
-                border 0.2s;
+            font-size: 13px;
+            transition: 0.2s;
         }
 
-        .style-button:hover {
-            border-color: #444;
-            color: #ddd;
+        .style-btn:hover {
+            background: #1d1d1d;
+            color: white;
         }
 
-        .style-button.active {
-            background: #f5f5f5;
-            color: #000;
-            border-color: #f5f5f5;
+        .style-btn.active {
+            background: #eee;
+            color: #111;
+            border-color: #eee;
         }
 
-        /* =========================
-           PREVIEW DA IMAGEM
-        ========================= */
+        /* IMAGE PREVIEW */
 
-        .image-preview {
-            max-width: 760px;
-            margin: 0 auto 8px;
+        #imagePreview {
             display: none;
+            padding: 8px 15px;
+            border-top: 1px solid #1c1c1c;
             position: relative;
         }
 
-        .image-preview.visible {
-            display: block;
-        }
-
-        .preview-image {
+        #previewImage {
             width: 80px;
             height: 80px;
             object-fit: cover;
@@ -265,218 +161,140 @@
             border: 1px solid #333;
         }
 
-        .remove-image {
+        #removeImage {
             position: absolute;
-
-            top: -7px;
-            left: 67px;
-
-            width: 22px;
-            height: 22px;
-
-            border: 1px solid #444;
+            top: 2px;
+            left: 82px;
+            width: 23px;
+            height: 23px;
+            border: none;
             border-radius: 50%;
-
-            background: #171717;
-            color: #fff;
-
+            background: #333;
+            color: white;
             cursor: pointer;
-
-            font-size: 13px;
+            font-size: 14px;
         }
 
-        /* =========================
-           INPUT
-        ========================= */
+        /* INPUT */
+
+        .input-area {
+            padding: 12px 15px 18px;
+        }
 
         .input-box {
-            max-width: 760px;
-            margin: auto;
-
-            background: #171717;
-
-            border: 1px solid #292929;
-
-            border-radius: 18px;
-
             display: flex;
             align-items: flex-end;
-
-            padding: 10px;
-
-            transition: border 0.2s;
+            gap: 8px;
+            background: #151515;
+            border: 1px solid #292929;
+            border-radius: 25px;
+            padding: 7px 8px 7px 10px;
         }
 
-        .input-box:focus-within {
-            border-color: #444;
-        }
-
-        /* =========================
-           BOTÃO DE IMAGEM
-        ========================= */
-
-        .attach-button {
-            width: 40px;
-            height: 40px;
-
+        #messageInput {
+            flex: 1;
+            resize: none;
             border: none;
-            border-radius: 12px;
-
+            outline: none;
             background: transparent;
-            color: #888;
-
-            font-size: 20px;
-
-            cursor: pointer;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            transition:
-                background 0.2s,
-                color 0.2s;
+            color: white;
+            font-family: inherit;
+            font-size: 15px;
+            line-height: 1.4;
+            max-height: 120px;
+            padding: 8px 4px;
         }
 
-        .attach-button:hover {
+        #messageInput::placeholder {
+            color: #666;
+        }
+
+        .icon-btn {
+            width: 38px;
+            height: 38px;
+            flex-shrink: 0;
+            border: none;
+            border-radius: 50%;
+            background: transparent;
+            color: #aaa;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .icon-btn:hover {
             background: #242424;
-            color: #fff;
+            color: white;
+        }
+
+        #sendBtn {
+            background: #eee;
+            color: #111;
+            font-size: 20px;
+        }
+
+        #sendBtn:hover {
+            background: white;
+        }
+
+        #sendBtn:disabled {
+            opacity: 0.4;
+            cursor: default;
         }
 
         #imageInput {
             display: none;
         }
 
-        /* =========================
-           TEXTAREA
-        ========================= */
+        /* LOADING */
 
-        textarea {
-            flex: 1;
-
-            resize: none;
-
-            border: none;
-            outline: none;
-
-            background: transparent;
-
-            color: white;
-
-            font-size: 15px;
-
-            line-height: 1.5;
-
-            padding: 8px 10px;
-
-            min-height: 42px;
-            max-height: 150px;
-
-            font-family: inherit;
+        .loading {
+            color: #777;
+            font-size: 14px;
         }
 
-        textarea::placeholder {
-            color: #666;
+        .loading span {
+            animation: blink 1.4s infinite;
         }
 
-        /* =========================
-           SEND
-        ========================= */
+        @keyframes blink {
+            0% {
+                opacity: 0.2;
+            }
 
-        #send {
-            width: 40px;
-            height: 40px;
+            50% {
+                opacity: 1;
+            }
 
-            border: none;
-
-            border-radius: 12px;
-
-            background: white;
-            color: black;
-
-            font-size: 18px;
-
-            cursor: pointer;
-
-            transition:
-                transform 0.15s,
-                opacity 0.15s;
+            100% {
+                opacity: 0.2;
+            }
         }
 
-        #send:hover {
-            transform: scale(1.05);
-        }
-
-        #send:disabled {
-            opacity: 0.4;
-            cursor: default;
-            transform: none;
-        }
-
-        .footer {
-            text-align: center;
-
-            color: #555;
-
-            font-size: 11px;
-
-            margin-top: 7px;
-        }
-
-        /* =========================
-           MOBILE
-        ========================= */
+        /* MOBILE */
 
         @media (max-width: 600px) {
 
             header {
-                padding: 0 16px;
-            }
-
-            .logo {
-                font-size: 19px;
-            }
-
-            .status {
-                display: none;
+                padding: 15px;
             }
 
             #chat {
-                padding:
-                    25px 14px 200px;
-            }
-
-            .welcome {
-                margin-top: 70px;
-            }
-
-            .welcome h1 {
-                font-size: 28px;
+                padding: 20px 13px;
             }
 
             .bubble {
-                max-width: 85%;
-            }
-
-            .input-area {
-                padding:
-                    10px 10px 14px;
-            }
-
-            .input-box {
-                border-radius: 16px;
+                max-width: 88%;
             }
 
             .styles {
-                margin-bottom: 8px;
+                padding-left: 10px;
+                padding-right: 10px;
             }
 
-            .message-image {
-                max-width: 220px;
+            .input-area {
+                padding: 8px 10px 12px;
             }
-
         }
-
     </style>
 </head>
 
@@ -487,15 +305,8 @@
     <!-- HEADER -->
 
     <header>
-
-        <div class="logo">
-            Rizzler AI 🔥
-        </div>
-
-        <div class="status">
-            teu wingman digital
-        </div>
-
+        <h1>Rizzler AI 🔥</h1>
+        <p>teu wingman digital</p>
     </header>
 
 
@@ -505,137 +316,101 @@
 
         <div class="welcome" id="welcome">
 
-            <h1>
-                Sem resposta? 😏
-            </h1>
+            <strong>Rizzler AI 🔥</strong>
 
-            <p>
-                Manda a situação. O Rizzler pensa contigo.
-            </p>
+            Manda uma mensagem ou um screenshot
+            e deixa comigo.
 
         </div>
 
     </main>
 
 
+    <!-- STYLES -->
+
+    <div class="styles">
+
+        <button class="style-btn active" data-style="natural">
+            😌 Natural
+        </button>
+
+        <button class="style-btn" data-style="confiante">
+            😎 Confiante
+        </button>
+
+        <button class="style-btn" data-style="engraçado">
+            😂 Engraçado
+        </button>
+
+        <button class="style-btn" data-style="amigavel">
+            🙂 Amigável
+        </button>
+
+        <button class="style-btn" data-style="romantico">
+            ❤️ Romântico
+        </button>
+
+        <button class="style-btn" data-style="atrevido">
+            😏 Atrevido
+        </button>
+
+        <button class="style-btn" data-style="direto">
+            🎯 Direto
+        </button>
+
+    </div>
+
+
+    <!-- IMAGE PREVIEW -->
+
+    <div id="imagePreview">
+
+        <img
+            id="previewImage"
+            alt="Imagem selecionada"
+        >
+
+        <button id="removeImage">
+            ×
+        </button>
+
+    </div>
+
+
     <!-- INPUT -->
 
     <div class="input-area">
 
-        <!-- ESTILOS -->
-
-        <div class="styles">
-
-            <button
-                class="style-button active"
-                data-style="natural">
-                😌 Natural
-            </button>
-
-            <button
-                class="style-button"
-                data-style="confiante">
-                😎 Confiante
-            </button>
-
-            <button
-                class="style-button"
-                data-style="engraçado">
-                😂 Engraçado
-            </button>
-
-            <button
-                class="style-button"
-                data-style="amigavel">
-                🙂 Amigável
-            </button>
-
-            <button
-                class="style-button"
-                data-style="romantico">
-                ❤️ Romântico
-            </button>
-
-            <button
-                class="style-button"
-                data-style="atrevido">
-                😏 Atrevido
-            </button>
-
-            <button
-                class="style-button"
-                data-style="direto">
-                🎯 Direto
-            </button>
-
-        </div>
-
-
-        <!-- PREVIEW -->
-
-        <div
-            class="image-preview"
-            id="imagePreview">
-
-            <img
-                id="previewImage"
-                class="preview-image"
-                alt="Imagem selecionada">
-
-            <button
-                class="remove-image"
-                id="removeImage"
-                title="Remover imagem">
-                ×
-            </button>
-
-        </div>
-
-
-        <!-- INPUT BOX -->
-
         <div class="input-box">
 
-            <!-- INPUT ESCONDIDO -->
+            <button
+                class="icon-btn"
+                id="attachBtn"
+                title="Enviar imagem"
+            >
+                📎
+            </button>
 
             <input
                 type="file"
                 id="imageInput"
-                accept="image/*">
-
-
-            <!-- BOTÃO -->
-
-            <button
-                class="attach-button"
-                id="attachButton"
-                title="Adicionar imagem">
-                📎
-            </button>
-
-
-            <!-- TEXTO -->
+                accept="image/*"
+            >
 
             <textarea
-                id="message"
+                id="messageInput"
                 rows="1"
-                placeholder="Conta-me a situação..."
+                placeholder="Manda a mensagem..."
             ></textarea>
 
-
-            <!-- ENVIAR -->
-
             <button
-                id="send"
-                title="Enviar">
+                class="icon-btn"
+                id="sendBtn"
+                title="Enviar"
+            >
                 ↑
             </button>
 
-        </div>
-
-
-        <div class="footer">
-            O Rizzler pode errar. Confirma antes de enviar algo importante.
         </div>
 
     </div>
@@ -645,86 +420,66 @@
 
 <script>
 
-    const messageInput =
-        document.getElementById(
-            "message"
-        );
-
-    const sendButton =
-        document.getElementById(
-            "send"
-        );
+    // ==========================================
+    // ELEMENTOS
+    // ==========================================
 
     const chat =
-        document.getElementById(
-            "chat"
-        );
+        document.getElementById("chat");
 
     const welcome =
-        document.getElementById(
-            "welcome"
-        );
+        document.getElementById("welcome");
+
+    const messageInput =
+        document.getElementById("messageInput");
+
+    const sendBtn =
+        document.getElementById("sendBtn");
+
+    const attachBtn =
+        document.getElementById("attachBtn");
 
     const imageInput =
-        document.getElementById(
-            "imageInput"
-        );
-
-    const attachButton =
-        document.getElementById(
-            "attachButton"
-        );
+        document.getElementById("imageInput");
 
     const imagePreview =
-        document.getElementById(
-            "imagePreview"
-        );
+        document.getElementById("imagePreview");
 
     const previewImage =
-        document.getElementById(
-            "previewImage"
-        );
+        document.getElementById("previewImage");
 
     const removeImage =
-        document.getElementById(
-            "removeImage"
-        );
+        document.getElementById("removeImage");
 
 
-    // =====================================
-    // ESTILO
-    // =====================================
+    // ==========================================
+    // ESTADO
+    // ==========================================
 
-    let selectedStyle =
-        "natural";
+    let selectedStyle = "natural";
 
-
-    const styleButtons =
-        document.querySelectorAll(
-            ".style-button"
-        );
+    let selectedImage = null;
 
 
-    styleButtons.forEach(
-        button => {
+    // ==========================================
+    // ESCOLHER ESTILO
+    // ==========================================
+
+    document
+        .querySelectorAll(".style-btn")
+        .forEach(button => {
 
             button.addEventListener(
                 "click",
                 () => {
 
-                    styleButtons.forEach(
-                        item => {
+                    document
+                        .querySelectorAll(".style-btn")
+                        .forEach(btn =>
+                            btn.classList.remove("active")
+                        );
 
-                            item.classList.remove(
-                                "active"
-                            );
-
-                        }
-                    );
-
-                    button.classList.add(
-                        "active"
-                    );
+                    button.classList.add("active");
 
                     selectedStyle =
                         button.dataset.style;
@@ -732,18 +487,14 @@
                 }
             );
 
-        }
-    );
+        });
 
 
-    // =====================================
-    // IMAGEM
-    // =====================================
+    // ==========================================
+    // ABRIR GALERIA
+    // ==========================================
 
-    let selectedImage = null;
-
-
-    attachButton.addEventListener(
+    attachBtn.addEventListener(
         "click",
         () => {
 
@@ -753,83 +504,110 @@
     );
 
 
+    // ==========================================
+    // CONVERTER IMAGEM
+    // ==========================================
+
+    function fileToDataURL(file) {
+
+        return new Promise(
+            (resolve, reject) => {
+
+                const reader =
+                    new FileReader();
+
+                reader.onload =
+                    () => resolve(
+                        reader.result
+                    );
+
+                reader.onerror =
+                    reject;
+
+                reader.readAsDataURL(file);
+
+            }
+        );
+
+    }
+
+
+    // ==========================================
+    // SELECIONAR IMAGEM
+    // ==========================================
+
     imageInput.addEventListener(
         "change",
-        () => {
+        async event => {
 
             const file =
-                imageInput.files[0];
+                event.target.files[0];
 
             if (!file) {
                 return;
             }
 
-
-            if (!file.type.startsWith(
-                "image/"
-            )) {
+            if (!file.type.startsWith("image/")) {
 
                 alert(
-                    "Escolhe uma imagem válida."
+                    "Seleciona uma imagem."
                 );
-
-                imageInput.value = "";
 
                 return;
-
             }
 
+            try {
 
-            selectedImage =
-                file;
-
-
-            const reader =
-                new FileReader();
-
-
-            reader.onload = event => {
+                selectedImage =
+                    await fileToDataURL(file);
 
                 previewImage.src =
-                    event.target.result;
+                    selectedImage;
 
-                imagePreview.classList.add(
-                    "visible"
+                imagePreview.style.display =
+                    "block";
+
+            } catch (error) {
+
+                console.error(
+                    "Erro ao carregar imagem:",
+                    error
                 );
 
-            };
+                alert(
+                    "Não foi possível carregar a imagem."
+                );
 
-
-            reader.readAsDataURL(file);
+            }
 
         }
     );
 
+
+    // ==========================================
+    // REMOVER IMAGEM
+    // ==========================================
 
     removeImage.addEventListener(
         "click",
         () => {
 
-            selectedImage =
-                null;
+            selectedImage = null;
 
-            imageInput.value =
-                "";
+            imageInput.value = "";
 
-            previewImage.src =
-                "";
+            previewImage.src = "";
 
-            imagePreview.classList.remove(
-                "visible"
-            );
+            imagePreview.style.display =
+                "none";
 
         }
     );
 
 
-    // =====================================
-    // ADICIONAR MENSAGEM
-    // =====================================
+    // ==========================================
+    // ADICIONAR MENSAGEM AO CHAT
+    // ==========================================
 
     function addMessage(
         text,
@@ -838,70 +616,52 @@
     ) {
 
         if (welcome) {
-            welcome.remove();
+
+            welcome.style.display =
+                "none";
+
         }
 
-
         const message =
-            document.createElement(
-                "div"
-            );
+            document.createElement("div");
 
         message.className =
             `message ${type}`;
 
 
         const bubble =
-            document.createElement(
-                "div"
-            );
+            document.createElement("div");
 
         bubble.className =
             "bubble";
 
 
+        // IMAGEM
+
         if (image) {
 
-            const label =
-                document.createElement(
-                    "div"
-                );
-
-            label.className =
-                "image-label";
-
-            label.textContent =
-                "Imagem enviada";
-
-            bubble.appendChild(
-                label
-            );
-
-
             const img =
-                document.createElement(
-                    "img"
-                );
+                document.createElement("img");
+
+            img.src = image;
 
             img.className =
-                "message-image";
+                "image-message";
 
-            img.src =
-                image;
+            img.alt =
+                "Imagem enviada";
 
-            bubble.appendChild(
-                img
-            );
+            bubble.appendChild(img);
 
         }
 
 
+        // TEXTO
+
         if (text) {
 
             const textElement =
-                document.createElement(
-                    "div"
-                );
+                document.createElement("div");
 
             textElement.textContent =
                 text;
@@ -925,50 +685,43 @@
         chat.scrollTop =
             chat.scrollHeight;
 
-
-        return message;
-
     }
 
 
-    // =====================================
+    // ==========================================
     // LOADING
-    // =====================================
+    // ==========================================
 
-    function addTyping() {
+    function addLoading() {
 
         const message =
-            document.createElement(
-                "div"
-            );
+            document.createElement("div");
 
         message.className =
             "message ai";
 
         message.id =
-            "typing";
+            "loadingMessage";
 
 
-        message.innerHTML = `
+        const bubble =
+            document.createElement("div");
 
-            <div class="bubble">
+        bubble.className =
+            "bubble loading";
 
-                <div class="typing">
+        bubble.innerHTML =
+            "Rizzler está a pensar<span>...</span>";
 
-                    <span></span>
-                    <span></span>
-                    <span></span>
 
-                </div>
-
-            </div>
-
-        `;
-
+        message.appendChild(
+            bubble
+        );
 
         chat.appendChild(
             message
         );
+
 
         chat.scrollTop =
             chat.scrollHeight;
@@ -976,9 +729,25 @@
     }
 
 
-    // =====================================
-    // ENVIAR
-    // =====================================
+    function removeLoading() {
+
+        const loading =
+            document.getElementById(
+                "loadingMessage"
+            );
+
+        if (loading) {
+
+            loading.remove();
+
+        }
+
+    }
+
+
+    // ==========================================
+    // ENVIAR MENSAGEM
+    // ==========================================
 
     async function sendMessage() {
 
@@ -986,8 +755,7 @@
             messageInput.value.trim();
 
 
-        // Nesta etapa,
-        // a imagem ainda é apenas visual.
+        // Não envia vazio
 
         if (
             !message &&
@@ -999,18 +767,13 @@
         }
 
 
-        let imageData = null;
+        // Guardar imagem antes de limpar
+
+        const imageData =
+            selectedImage;
 
 
-        if (selectedImage) {
-
-            imageData =
-                await fileToDataURL(
-                    selectedImage
-                );
-
-        }
-
+        // Mostrar no chat
 
         addMessage(
             message,
@@ -1019,55 +782,43 @@
         );
 
 
-        messageInput.value =
-            "";
+        // Limpar interface
 
-        messageInput.style.height =
-            "42px";
+        messageInput.value = "";
 
+        selectedImage = null;
 
-        selectedImage =
-            null;
+        imageInput.value = "";
 
-        imageInput.value =
-            "";
+        imagePreview.style.display =
+            "none";
 
-        previewImage.src =
-            "";
-
-        imagePreview.classList.remove(
-            "visible"
-        );
+        previewImage.src = "";
 
 
-        sendButton.disabled =
-            true;
+        addLoading();
 
-
-        addTyping();
+        sendBtn.disabled = true;
 
 
         try {
 
-            /*
-             * Por enquanto enviamos apenas
-             * a mensagem para a API.
-             *
-             * A análise da imagem será
-             * adicionada no próximo passo.
-             */
+            // ==================================
+            // ENVIAR TEXTO + IMAGEM
+            // ==================================
 
             const response =
                 await fetch(
                     "/api/chat",
                     {
 
-                        method:
-                            "POST",
+                        method: "POST",
 
                         headers: {
+
                             "Content-Type":
                                 "application/json"
+
                         },
 
                         body:
@@ -1077,7 +828,10 @@
                                     message,
 
                                 style:
-                                    selectedStyle
+                                    selectedStyle,
+
+                                image:
+                                    imageData || null
 
                             })
 
@@ -1089,26 +843,25 @@
                 await response.json();
 
 
-            const typing =
-                document.getElementById(
-                    "typing"
-                );
+            removeLoading();
 
 
-            if (typing) {
-                typing.remove();
-            }
-
-
-            if (!response.ok) {
+            if (
+                !response.ok ||
+                !data.success
+            ) {
 
                 throw new Error(
                     data.error ||
-                    "Erro desconhecido."
+                    "Erro ao contactar o Rizzler."
                 );
 
             }
 
+
+            // ==================================
+            // RESPOSTA DA IA
+            // ==================================
 
             addMessage(
                 data.response,
@@ -1118,27 +871,22 @@
 
         } catch (error) {
 
-            const typing =
-                document.getElementById(
-                    "typing"
-                );
+            removeLoading();
 
-
-            if (typing) {
-                typing.remove();
-            }
-
-
-            addMessage(
-                "Deu erro aqui 😭: " +
-                error.message,
-                "ai"
+            console.error(
+                "Erro:",
+                error
             );
 
 
+            addMessage(
+                "Deu erro ao contactar o Rizzler. Tenta novamente.",
+                "ai"
+            );
+
         } finally {
 
-            sendButton.disabled =
+            sendBtn.disabled =
                 false;
 
             messageInput.focus();
@@ -1148,49 +896,19 @@
     }
 
 
-    // =====================================
-    // FILE → BASE64
-    // =====================================
-
-    function fileToDataURL(file) {
-
-        return new Promise(
-            (resolve, reject) => {
-
-                const reader =
-                    new FileReader();
-
-                reader.onload =
-                    () => resolve(
-                        reader.result
-                    );
-
-                reader.onerror =
-                    reject;
-
-                reader.readAsDataURL(
-                    file
-                );
-
-            }
-        );
-
-    }
-
-
-    // =====================================
+    // ==========================================
     // BOTÃO ENVIAR
-    // =====================================
+    // ==========================================
 
-    sendButton.addEventListener(
+    sendBtn.addEventListener(
         "click",
         sendMessage
     );
 
 
-    // =====================================
+    // ==========================================
     // ENTER
-    // =====================================
+    // ==========================================
 
     messageInput.addEventListener(
         "keydown",
@@ -1211,21 +929,21 @@
     );
 
 
-    // =====================================
-    // TEXTAREA
-    // =====================================
+    // ==========================================
+    // AUTO-RESIZE
+    // ==========================================
 
     messageInput.addEventListener(
         "input",
         () => {
 
             messageInput.style.height =
-                "42px";
+                "auto";
 
             messageInput.style.height =
                 Math.min(
                     messageInput.scrollHeight,
-                    150
+                    120
                 ) + "px";
 
         }
