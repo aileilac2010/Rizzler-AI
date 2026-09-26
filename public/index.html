@@ -5,113 +5,446 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Rizzler AI</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: #0a0a0a;
+            color: #f5f5f5;
+            font-family: Arial, Helvetica, sans-serif;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .app {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* HEADER */
+
+        header {
+            height: 65px;
+            border-bottom: 1px solid #222;
+            display: flex;
+            align-items: center;
+            padding: 0 22px;
+            background: #0a0a0a;
+        }
+
+        .logo {
+            font-size: 21px;
+            font-weight: bold;
+            letter-spacing: -0.5px;
+        }
+
+        .logo span {
+            margin-left: 5px;
+        }
+
+        .status {
+            margin-left: 12px;
+            font-size: 12px;
+            color: #777;
+        }
+
+        /* CHAT */
+
+        #chat {
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px 20px 120px;
+        }
+
+        .welcome {
+            max-width: 700px;
+            margin: 90px auto 0;
+            text-align: center;
+        }
+
+        .welcome h1 {
+            font-size: 34px;
+            margin-bottom: 12px;
+        }
+
+        .welcome p {
+            color: #888;
+            font-size: 16px;
+        }
+
+        .message {
+            max-width: 760px;
+            margin: 0 auto 20px;
+            display: flex;
+        }
+
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .bubble {
+            max-width: 75%;
+            padding: 13px 17px;
+            border-radius: 18px;
+            line-height: 1.5;
+            font-size: 15px;
+            white-space: pre-wrap;
+        }
+
+        .user .bubble {
+            background: #242424;
+            color: #fff;
+            border-bottom-right-radius: 5px;
+        }
+
+        .ai .bubble {
+            background: transparent;
+            color: #e8e8e8;
+            padding-left: 0;
+            border-bottom-left-radius: 5px;
+        }
+
+        /* LOADING */
+
+        .typing {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+            height: 20px;
+        }
+
+        .typing span {
+            width: 5px;
+            height: 5px;
+            background: #888;
+            border-radius: 50%;
+            animation: typing 1s infinite;
+        }
+
+        .typing span:nth-child(2) {
+            animation-delay: 0.15s;
+        }
+
+        .typing span:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% {
+                opacity: 0.3;
+                transform: translateY(0);
+            }
+
+            30% {
+                opacity: 1;
+                transform: translateY(-3px);
+            }
+        }
+
+        /* INPUT AREA */
+
+        .input-area {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 15px 20px 20px;
+            background: linear-gradient(
+                transparent,
+                #0a0a0a 25%
+            );
+        }
+
+        .input-box {
+            max-width: 760px;
+            margin: auto;
+            background: #171717;
+            border: 1px solid #292929;
+            border-radius: 18px;
+            display: flex;
+            align-items: flex-end;
+            padding: 10px;
+            transition: border 0.2s;
+        }
+
+        .input-box:focus-within {
+            border-color: #444;
+        }
+
+        textarea {
+            flex: 1;
+            resize: none;
+            border: none;
+            outline: none;
+            background: transparent;
+            color: white;
+            font-size: 15px;
+            line-height: 1.5;
+            padding: 8px 10px;
+            min-height: 42px;
+            max-height: 150px;
+            font-family: inherit;
+        }
+
+        textarea::placeholder {
+            color: #666;
+        }
+
+        #send {
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 12px;
+            background: white;
+            color: black;
+            font-size: 18px;
+            cursor: pointer;
+            transition: transform 0.15s, opacity 0.15s;
+        }
+
+        #send:hover {
+            transform: scale(1.05);
+        }
+
+        #send:disabled {
+            opacity: 0.4;
+            cursor: default;
+            transform: none;
+        }
+
+        .footer {
+            text-align: center;
+            color: #555;
+            font-size: 11px;
+            margin-top: 8px;
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 600px) {
+
+            header {
+                padding: 0 16px;
+            }
+
+            .logo {
+                font-size: 19px;
+            }
+
+            #chat {
+                padding: 25px 14px 120px;
+            }
+
+            .welcome {
+                margin-top: 70px;
+            }
+
+            .welcome h1 {
+                font-size: 28px;
+            }
+
+            .bubble {
+                max-width: 85%;
+            }
+
+            .input-area {
+                padding: 10px 10px 14px;
+            }
+
+            .input-box {
+                border-radius: 16px;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-    <h1>Rizzler AI 🔥</h1>
+<div class="app">
 
-    <p>A tua IA para nunca ficares sem resposta.</p>
+    <header>
+        <div class="logo">Rizzler AI 🔥</div>
+        <div class="status">teu wingman digital</div>
+    </header>
 
-    <textarea
-        id="message"
-        placeholder="Escreve uma situação..."
-    ></textarea>
+    <main id="chat">
 
-    <br><br>
+        <div class="welcome" id="welcome">
+            <h1>Sem resposta? 😏</h1>
+            <p>Manda a situação. O Rizzler pensa contigo.</p>
+        </div>
 
-    <button id="send">
-        Perguntar ao Rizzler
-    </button>
+    </main>
 
-    <h2>Resposta:</h2>
+    <div class="input-area">
 
-    <div id="response"></div>
+        <div class="input-box">
 
+            <textarea
+                id="message"
+                rows="1"
+                placeholder="Conta-me a situação..."
+            ></textarea>
 
-    <script>
+            <button id="send" title="Enviar">
+                ↑
+            </button>
 
-        const messageInput =
-            document.getElementById("message");
+        </div>
 
-        const sendButton =
-            document.getElementById("send");
+        <div class="footer">
+            O Rizzler pode errar. Confirma antes de enviar algo importante.
+        </div>
 
-        const responseBox =
-            document.getElementById("response");
+    </div>
 
+</div>
 
-        sendButton.addEventListener("click", async () => {
+<script>
 
-            const message =
-                messageInput.value.trim();
+    const messageInput = document.getElementById("message");
+    const sendButton = document.getElementById("send");
+    const chat = document.getElementById("chat");
+    const welcome = document.getElementById("welcome");
 
-            if (!message) {
-                responseBox.textContent =
-                    "Escreve alguma coisa primeiro.";
-                return;
+    function addMessage(text, type) {
+
+        if (welcome) {
+            welcome.remove();
+        }
+
+        const message = document.createElement("div");
+        message.className = `message ${type}`;
+
+        const bubble = document.createElement("div");
+        bubble.className = "bubble";
+        bubble.textContent = text;
+
+        message.appendChild(bubble);
+        chat.appendChild(message);
+
+        chat.scrollTop = chat.scrollHeight;
+
+        return message;
+    }
+
+    function addTyping() {
+
+        const message = document.createElement("div");
+        message.className = "message ai";
+        message.id = "typing";
+
+        message.innerHTML = `
+            <div class="bubble">
+                <div class="typing">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        `;
+
+        chat.appendChild(message);
+        chat.scrollTop = chat.scrollHeight;
+    }
+
+    async function sendMessage() {
+
+        const message = messageInput.value.trim();
+
+        if (!message) return;
+
+        addMessage(message, "user");
+
+        messageInput.value = "";
+        messageInput.style.height = "42px";
+
+        sendButton.disabled = true;
+
+        addTyping();
+
+        try {
+
+            const response = await fetch("/api/chat", {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    message: message
+                })
+
+            });
+
+            const data = await response.json();
+
+            const typing = document.getElementById("typing");
+
+            if (typing) {
+                typing.remove();
             }
 
-
-            sendButton.disabled = true;
-
-            sendButton.textContent =
-                "O Rizzler está a pensar...";
-
-            responseBox.textContent =
-                "A processar...";
-
-
-            try {
-
-                const response =
-                    await fetch("/api/chat", {
-
-                        method: "POST",
-
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-
-                        body: JSON.stringify({
-                            message: message
-                        })
-
-                    });
-
-
-                const data =
-                    await response.json();
-
-
-                if (!response.ok) {
-                    throw new Error(
-                        data.error || "Erro desconhecido."
-                    );
-                }
-
-
-                responseBox.textContent =
-                    data.response;
-
-
-            } catch (error) {
-
-                responseBox.textContent =
-                    "Erro: " + error.message;
-
-            } finally {
-
-                sendButton.disabled = false;
-
-                sendButton.textContent =
-                    "Perguntar ao Rizzler";
-
+            if (!response.ok) {
+                throw new Error(
+                    data.error || "Erro desconhecido."
+                );
             }
 
-        });
+            addMessage(data.response, "ai");
 
-    </script>
+        } catch (error) {
+
+            const typing = document.getElementById("typing");
+
+            if (typing) {
+                typing.remove();
+            }
+
+            addMessage(
+                "Deu erro aqui 😭: " + error.message,
+                "ai"
+            );
+
+        } finally {
+
+            sendButton.disabled = false;
+            messageInput.focus();
+
+        }
+    }
+
+    sendButton.addEventListener("click", sendMessage);
+
+    messageInput.addEventListener("keydown", (event) => {
+
+        if (event.key === "Enter" && !event.shiftKey) {
+
+            event.preventDefault();
+            sendMessage();
+
+        }
+
+    });
+
+    messageInput.addEventListener("input", () => {
+
+        messageInput.style.height = "42px";
+
+        messageInput.style.height =
+            Math.min(messageInput.scrollHeight, 150) + "px";
+
+    });
+
+</script>
 
 </body>
 </html>
