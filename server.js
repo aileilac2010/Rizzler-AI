@@ -12,38 +12,53 @@ const PORT = process.env.PORT || 3000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Conecta ao endpoint compatível com OpenAI da Groq
+// ==========================================
+// GROQ
+// ==========================================
+
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
     baseURL: "https://api.groq.com/openai/v1"
 });
 
-// Permite receber JSON
+// ==========================================
+// CONFIGURAÇÕES
+// ==========================================
+
 app.use(express.json({ limit: "10mb" }));
 
-// Servir os ficheiros da pasta public
-app.use(express.static(path.join(__dirname, "public")));
+app.use(
+    express.static(
+        path.join(__dirname, "public")
+    )
+);
 
-// Página principal
 app.get("/", (req, res) => {
     res.sendFile(
-        path.join(__dirname, "public", "index.html")
+        path.join(
+            __dirname,
+            "public",
+            "index.html"
+        )
     );
 });
 
-
 // ==========================================
-// TESTE DA API
+// TESTE
 // ==========================================
 
 app.get("/api/test", async (req, res) => {
 
     try {
 
-        const response = await openai.responses.create({
-            model: "openai/gpt-oss-20b",
-            input: "Responde apenas: Rizzler AI está funcionando!"
-        });
+        const response =
+            await openai.responses.create({
+
+                model: "openai/gpt-oss-20b",
+
+                input:
+                    "Responde apenas: Rizzler AI está funcionando!"
+            });
 
         res.json({
             success: true,
@@ -52,7 +67,10 @@ app.get("/api/test", async (req, res) => {
 
     } catch (error) {
 
-        console.error("Erro no teste:", error);
+        console.error(
+            "Erro no teste:",
+            error
+        );
 
         res.status(500).json({
             success: false,
@@ -63,103 +81,215 @@ app.get("/api/test", async (req, res) => {
 
 });
 
-
 // ==========================================
-// CHAT DO RIZZLER
+// RIZZLER AI
 // ==========================================
 
 app.post("/api/chat", async (req, res) => {
 
     try {
 
-        const { message } = req.body;
+        const {
+            message,
+            style = "natural"
+        } = req.body;
 
-        // Verificar se existe mensagem
-        if (!message || !message.trim()) {
+        // Verificar mensagem
+
+        if (
+            !message ||
+            !message.trim()
+        ) {
 
             return res.status(400).json({
+
                 success: false,
-                error: "Mensagem não fornecida."
+
+                error:
+                    "Mensagem não fornecida."
             });
 
         }
 
+        // ==================================
+        // PERSONALIDADES
+        // ==================================
 
-        const response = await openai.responses.create({
+        const styles = {
 
-            model: "openai/gpt-oss-20b",
+            natural: `
+Responde de forma natural,
+descontraída e espontânea.
+            `,
 
-            instructions: `
-Tu és o Rizzler AI.
+            confiante: `
+Responde com confiança,
+sem parecer arrogante ou desesperado.
+            `,
 
-És uma IA especializada em ajudar pessoas
-a conversar e responder mensagens.
+            engraçado: `
+Usa humor e criatividade.
+A resposta deve parecer algo
+que uma pessoa realmente mandaria.
+            `,
+
+            amigavel: `
+Mantém um tom simpático,
+leve e fácil de continuar.
+            `,
+
+            romantico: `
+Usa um tom carinhoso e interessado,
+mas sem exagerar ou parecer artificial.
+            `,
+
+            atrevido: `
+Usa provocação leve e brincalhona,
+sem conteúdo sexual ou explícito.
+            `,
+
+            direto: `
+Vai direto ao ponto.
+Poucas palavras e sem enrolação.
+            `
+        };
+
+        const selectedStyle =
+            styles[style] ||
+            styles.natural;
+
+        // ==================================
+        // INSTRUÇÕES DO RIZZLER
+        // ==================================
+
+        const instructions = `
+
+Tu és o Rizzler AI 🔥.
+
+És um especialista em ajudar
+o utilizador a comunicar melhor
+em conversas.
 
 A tua língua principal é português.
 
-O teu estilo deve ser:
-
-- natural
-- descontraído
-- inteligente
-- divertido
-- direto
-
-Não fales como um assistente corporativo.
-
-Fala de maneira natural e adapta-te ao
-jeito como o utilizador escreve.
-
 O teu objetivo é ajudar o utilizador a:
 
-- entender melhor uma conversa
-- pensar em respostas
-- continuar uma conversa
-- encontrar formas naturais de responder
-- adaptar o tom da mensagem
+- entender mensagens
+- interpretar o contexto
+- continuar conversas
+- pensar em respostas naturais
+- adaptar o tom das mensagens
+- evitar respostas estranhas ou forçadas
 
-Não inventes informações que não foram
-fornecidas pelo utilizador.
+${selectedStyle}
 
-Se o contexto não for suficiente, trabalha
-apenas com o que foi fornecido.
+REGRAS IMPORTANTES:
 
-Mantém as respostas relativamente curtas.
-            `,
+1. Fala como uma pessoa normal.
 
-            input: message
+2. Nunca uses linguagem corporativa.
 
-        });
+3. Não inventes informações.
 
+4. Usa apenas o contexto fornecido.
+
+5. Se faltar contexto, deixa isso claro.
+
+6. Evita respostas demasiado longas.
+
+7. Não forces romance quando o contexto
+não indica interesse romântico.
+
+8. As sugestões devem parecer mensagens
+que uma pessoa realmente enviaria.
+
+9. Mantém o conteúdo apropriado
+e não sexual.
+
+QUANDO O UTILIZADOR PEDIR UMA RESPOSTA:
+
+Dá até 3 opções.
+
+Organiza assim:
+
+🔥 Opção 1
+"mensagem"
+
+😎 Opção 2
+"mensagem"
+
+😂 Opção 3
+"mensagem"
+
+Depois acrescenta uma frase curta
+explicando qual é a diferença entre elas.
+
+Não escrevas uma explicação enorme.
+
+`;
+
+        // ==================================
+        // PEDIDO À GROQ
+        // ==================================
+
+        const response =
+            await openai.responses.create({
+
+                model:
+                    "openai/gpt-oss-20b",
+
+                instructions,
+
+                input:
+                    message.trim()
+
+            });
+
+        // ==================================
+        // RESPOSTA
+        // ==================================
 
         res.json({
-            success: true,
-            response: response.output_text
-        });
 
+            success: true,
+
+            response:
+                response.output_text
+
+        });
 
     } catch (error) {
 
-        console.error("Erro no Rizzler:", error);
+        console.error(
+            "Erro no Rizzler:",
+            error
+        );
 
         res.status(500).json({
+
             success: false,
-            error: error.message
+
+            error:
+                error.message ||
+                "Erro ao contactar a IA."
+
         });
 
     }
 
 });
 
-
 // ==========================================
-// INICIAR SERVIDOR
+// SERVIDOR
 // ==========================================
 
-app.listen(PORT, () => {
+app.listen(
+    PORT,
+    () => {
 
-    console.log(
-        `🔥 Rizzler AI está rodando na porta ${PORT}`
-    );
+        console.log(
+            `🔥 Rizzler AI está rodando na porta ${PORT}`
+        );
 
-});
+    }
+);
