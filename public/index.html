@@ -7,6 +7,7 @@
     <title>Rizzler AI</title>
 
     <style>
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -27,7 +28,9 @@
             flex-direction: column;
         }
 
-        /* HEADER */
+        /* =========================
+           HEADER
+        ========================= */
 
         header {
             height: 65px;
@@ -36,6 +39,7 @@
             align-items: center;
             padding: 0 22px;
             background: #0a0a0a;
+            flex-shrink: 0;
         }
 
         .logo {
@@ -44,22 +48,21 @@
             letter-spacing: -0.5px;
         }
 
-        .logo span {
-            margin-left: 5px;
-        }
-
         .status {
             margin-left: 12px;
             font-size: 12px;
             color: #777;
         }
 
-        /* CHAT */
+        /* =========================
+           CHAT
+        ========================= */
 
         #chat {
             flex: 1;
             overflow-y: auto;
-            padding: 30px 20px 120px;
+            padding: 30px 20px 180px;
+            scroll-behavior: smooth;
         }
 
         .welcome {
@@ -110,7 +113,9 @@
             border-bottom-left-radius: 5px;
         }
 
-        /* LOADING */
+        /* =========================
+           TYPING
+        ========================= */
 
         .typing {
             display: flex;
@@ -136,6 +141,7 @@
         }
 
         @keyframes typing {
+
             0%, 60%, 100% {
                 opacity: 0.3;
                 transform: translateY(0);
@@ -145,31 +151,97 @@
                 opacity: 1;
                 transform: translateY(-3px);
             }
+
         }
 
-        /* INPUT AREA */
+        /* =========================
+           INPUT AREA
+        ========================= */
 
         .input-area {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            padding: 15px 20px 20px;
+            padding: 12px 20px 20px;
+
             background: linear-gradient(
                 transparent,
                 #0a0a0a 25%
             );
         }
 
+        /* =========================
+           ESTILOS
+        ========================= */
+
+        .styles {
+            max-width: 760px;
+            margin: 0 auto 9px;
+
+            display: flex;
+            gap: 7px;
+
+            overflow-x: auto;
+
+            scrollbar-width: none;
+        }
+
+        .styles::-webkit-scrollbar {
+            display: none;
+        }
+
+        .style-button {
+            flex-shrink: 0;
+
+            border: 1px solid #292929;
+            background: #121212;
+            color: #888;
+
+            padding: 7px 12px;
+
+            border-radius: 20px;
+
+            font-size: 12px;
+
+            cursor: pointer;
+
+            transition:
+                background 0.2s,
+                color 0.2s,
+                border 0.2s;
+        }
+
+        .style-button:hover {
+            border-color: #444;
+            color: #ddd;
+        }
+
+        .style-button.active {
+            background: #f5f5f5;
+            color: #000;
+            border-color: #f5f5f5;
+        }
+
+        /* =========================
+           INPUT
+        ========================= */
+
         .input-box {
             max-width: 760px;
             margin: auto;
+
             background: #171717;
+
             border: 1px solid #292929;
+
             border-radius: 18px;
+
             display: flex;
             align-items: flex-end;
+
             padding: 10px;
+
             transition: border 0.2s;
         }
 
@@ -179,16 +251,25 @@
 
         textarea {
             flex: 1;
+
             resize: none;
+
             border: none;
             outline: none;
+
             background: transparent;
+
             color: white;
+
             font-size: 15px;
+
             line-height: 1.5;
+
             padding: 8px 10px;
+
             min-height: 42px;
             max-height: 150px;
+
             font-family: inherit;
         }
 
@@ -199,13 +280,21 @@
         #send {
             width: 40px;
             height: 40px;
+
             border: none;
+
             border-radius: 12px;
+
             background: white;
             color: black;
+
             font-size: 18px;
+
             cursor: pointer;
-            transition: transform 0.15s, opacity 0.15s;
+
+            transition:
+                transform 0.15s,
+                opacity 0.15s;
         }
 
         #send:hover {
@@ -220,12 +309,17 @@
 
         .footer {
             text-align: center;
+
             color: #555;
+
             font-size: 11px;
-            margin-top: 8px;
+
+            margin-top: 7px;
         }
 
-        /* MOBILE */
+        /* =========================
+           MOBILE
+        ========================= */
 
         @media (max-width: 600px) {
 
@@ -237,8 +331,13 @@
                 font-size: 19px;
             }
 
+            .status {
+                display: none;
+            }
+
             #chat {
-                padding: 25px 14px 120px;
+                padding:
+                    25px 14px 190px;
             }
 
             .welcome {
@@ -254,13 +353,20 @@
             }
 
             .input-area {
-                padding: 10px 10px 14px;
+                padding:
+                    10px 10px 14px;
             }
 
             .input-box {
                 border-radius: 16px;
             }
+
+            .styles {
+                margin-bottom: 8px;
+            }
+
         }
+
     </style>
 </head>
 
@@ -268,21 +374,94 @@
 
 <div class="app">
 
+    <!-- HEADER -->
+
     <header>
-        <div class="logo">Rizzler AI 🔥</div>
-        <div class="status">teu wingman digital</div>
+
+        <div class="logo">
+            Rizzler AI 🔥
+        </div>
+
+        <div class="status">
+            teu wingman digital
+        </div>
+
     </header>
+
+
+    <!-- CHAT -->
 
     <main id="chat">
 
         <div class="welcome" id="welcome">
-            <h1>Sem resposta? 😏</h1>
-            <p>Manda a situação. O Rizzler pensa contigo.</p>
+
+            <h1>
+                Sem resposta? 😏
+            </h1>
+
+            <p>
+                Manda a situação. O Rizzler pensa contigo.
+            </p>
+
         </div>
 
     </main>
 
+
+    <!-- INPUT -->
+
     <div class="input-area">
+
+        <!-- ESTILOS -->
+
+        <div class="styles">
+
+            <button
+                class="style-button active"
+                data-style="natural">
+                😌 Natural
+            </button>
+
+            <button
+                class="style-button"
+                data-style="confiante">
+                😎 Confiante
+            </button>
+
+            <button
+                class="style-button"
+                data-style="engraçado">
+                😂 Engraçado
+            </button>
+
+            <button
+                class="style-button"
+                data-style="amigavel">
+                🙂 Amigável
+            </button>
+
+            <button
+                class="style-button"
+                data-style="romantico">
+                ❤️ Romântico
+            </button>
+
+            <button
+                class="style-button"
+                data-style="atrevido">
+                😏 Atrevido
+            </button>
+
+            <button
+                class="style-button"
+                data-style="direto">
+                🎯 Direto
+            </button>
+
+        </div>
+
+
+        <!-- CAIXA -->
 
         <div class="input-box">
 
@@ -292,11 +471,14 @@
                 placeholder="Conta-me a situação..."
             ></textarea>
 
-            <button id="send" title="Enviar">
+            <button
+                id="send"
+                title="Enviar">
                 ↑
             </button>
 
         </div>
+
 
         <div class="footer">
             O Rizzler pode errar. Confirma antes de enviar algo importante.
@@ -306,143 +488,336 @@
 
 </div>
 
+
 <script>
 
-    const messageInput = document.getElementById("message");
-    const sendButton = document.getElementById("send");
-    const chat = document.getElementById("chat");
-    const welcome = document.getElementById("welcome");
+    const messageInput =
+        document.getElementById("message");
 
-    function addMessage(text, type) {
+    const sendButton =
+        document.getElementById("send");
+
+    const chat =
+        document.getElementById("chat");
+
+    const welcome =
+        document.getElementById("welcome");
+
+
+    // =====================================
+    // ESTILO ATUAL
+    // =====================================
+
+    let selectedStyle = "natural";
+
+
+    const styleButtons =
+        document.querySelectorAll(
+            ".style-button"
+        );
+
+
+    styleButtons.forEach(button => {
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                styleButtons.forEach(
+                    item =>
+                        item.classList.remove(
+                            "active"
+                        )
+                );
+
+                button.classList.add(
+                    "active"
+                );
+
+                selectedStyle =
+                    button.dataset.style;
+
+            }
+        );
+
+    });
+
+
+    // =====================================
+    // ADICIONAR MENSAGEM
+    // =====================================
+
+    function addMessage(
+        text,
+        type
+    ) {
 
         if (welcome) {
             welcome.remove();
         }
 
-        const message = document.createElement("div");
-        message.className = `message ${type}`;
+        const message =
+            document.createElement(
+                "div"
+            );
 
-        const bubble = document.createElement("div");
-        bubble.className = "bubble";
-        bubble.textContent = text;
+        message.className =
+            `message ${type}`;
 
-        message.appendChild(bubble);
-        chat.appendChild(message);
 
-        chat.scrollTop = chat.scrollHeight;
+        const bubble =
+            document.createElement(
+                "div"
+            );
+
+        bubble.className =
+            "bubble";
+
+        bubble.textContent =
+            text;
+
+
+        message.appendChild(
+            bubble
+        );
+
+        chat.appendChild(
+            message
+        );
+
+
+        chat.scrollTop =
+            chat.scrollHeight;
+
 
         return message;
     }
 
+
+    // =====================================
+    // LOADING
+    // =====================================
+
     function addTyping() {
 
-        const message = document.createElement("div");
-        message.className = "message ai";
-        message.id = "typing";
+        const message =
+            document.createElement(
+                "div"
+            );
+
+        message.className =
+            "message ai";
+
+        message.id =
+            "typing";
+
 
         message.innerHTML = `
+
             <div class="bubble">
+
                 <div class="typing">
+
                     <span></span>
                     <span></span>
                     <span></span>
+
                 </div>
+
             </div>
+
         `;
 
-        chat.appendChild(message);
-        chat.scrollTop = chat.scrollHeight;
+
+        chat.appendChild(
+            message
+        );
+
+        chat.scrollTop =
+            chat.scrollHeight;
     }
+
+
+    // =====================================
+    // ENVIAR
+    // =====================================
 
     async function sendMessage() {
 
-        const message = messageInput.value.trim();
+        const message =
+            messageInput.value.trim();
 
-        if (!message) return;
 
-        addMessage(message, "user");
+        if (!message) {
+            return;
+        }
 
-        messageInput.value = "";
-        messageInput.style.height = "42px";
 
-        sendButton.disabled = true;
+        addMessage(
+            message,
+            "user"
+        );
+
+
+        messageInput.value =
+            "";
+
+        messageInput.style.height =
+            "42px";
+
+
+        sendButton.disabled =
+            true;
+
 
         addTyping();
 
+
         try {
 
-            const response = await fetch("/api/chat", {
+            const response =
+                await fetch(
+                    "/api/chat",
+                    {
 
-                method: "POST",
+                        method:
+                            "POST",
 
-                headers: {
-                    "Content-Type": "application/json"
-                },
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
 
-                body: JSON.stringify({
-                    message: message
-                })
+                        body:
+                            JSON.stringify({
 
-            });
+                                message:
+                                    message,
 
-            const data = await response.json();
+                                style:
+                                    selectedStyle
 
-            const typing = document.getElementById("typing");
+                            })
+
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            const typing =
+                document.getElementById(
+                    "typing"
+                );
+
 
             if (typing) {
                 typing.remove();
             }
+
 
             if (!response.ok) {
+
                 throw new Error(
-                    data.error || "Erro desconhecido."
+                    data.error ||
+                    "Erro desconhecido."
                 );
+
             }
 
-            addMessage(data.response, "ai");
-
-        } catch (error) {
-
-            const typing = document.getElementById("typing");
-
-            if (typing) {
-                typing.remove();
-            }
 
             addMessage(
-                "Deu erro aqui 😭: " + error.message,
+                data.response,
                 "ai"
             );
 
+
+        } catch (error) {
+
+            const typing =
+                document.getElementById(
+                    "typing"
+                );
+
+
+            if (typing) {
+                typing.remove();
+            }
+
+
+            addMessage(
+                "Deu erro aqui 😭: " +
+                error.message,
+                "ai"
+            );
+
+
         } finally {
 
-            sendButton.disabled = false;
+            sendButton.disabled =
+                false;
+
             messageInput.focus();
 
         }
+
     }
 
-    sendButton.addEventListener("click", sendMessage);
 
-    messageInput.addEventListener("keydown", (event) => {
+    // =====================================
+    // BOTÃO
+    // =====================================
 
-        if (event.key === "Enter" && !event.shiftKey) {
+    sendButton.addEventListener(
+        "click",
+        sendMessage
+    );
 
-            event.preventDefault();
-            sendMessage();
+
+    // =====================================
+    // ENTER
+    // =====================================
+
+    messageInput.addEventListener(
+        "keydown",
+        event => {
+
+            if (
+                event.key === "Enter" &&
+                !event.shiftKey
+            ) {
+
+                event.preventDefault();
+
+                sendMessage();
+
+            }
 
         }
+    );
 
-    });
 
-    messageInput.addEventListener("input", () => {
+    // =====================================
+    // TEXTAREA AUTOMÁTICO
+    // =====================================
 
-        messageInput.style.height = "42px";
+    messageInput.addEventListener(
+        "input",
+        () => {
 
-        messageInput.style.height =
-            Math.min(messageInput.scrollHeight, 150) + "px";
+            messageInput.style.height =
+                "42px";
 
-    });
+            messageInput.style.height =
+                Math.min(
+                    messageInput.scrollHeight,
+                    150
+                ) + "px";
+
+        }
+    );
 
 </script>
 
