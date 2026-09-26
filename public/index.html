@@ -13,5 +13,105 @@
 
     <p>A tua IA para nunca ficares sem resposta.</p>
 
+    <textarea
+        id="message"
+        placeholder="Escreve uma situação..."
+    ></textarea>
+
+    <br><br>
+
+    <button id="send">
+        Perguntar ao Rizzler
+    </button>
+
+    <h2>Resposta:</h2>
+
+    <div id="response"></div>
+
+
+    <script>
+
+        const messageInput =
+            document.getElementById("message");
+
+        const sendButton =
+            document.getElementById("send");
+
+        const responseBox =
+            document.getElementById("response");
+
+
+        sendButton.addEventListener("click", async () => {
+
+            const message =
+                messageInput.value.trim();
+
+            if (!message) {
+                responseBox.textContent =
+                    "Escreve alguma coisa primeiro.";
+                return;
+            }
+
+
+            sendButton.disabled = true;
+
+            sendButton.textContent =
+                "O Rizzler está a pensar...";
+
+            responseBox.textContent =
+                "A processar...";
+
+
+            try {
+
+                const response =
+                    await fetch("/api/chat", {
+
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+
+                        body: JSON.stringify({
+                            message: message
+                        })
+
+                    });
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+                    throw new Error(
+                        data.error || "Erro desconhecido."
+                    );
+                }
+
+
+                responseBox.textContent =
+                    data.response;
+
+
+            } catch (error) {
+
+                responseBox.textContent =
+                    "Erro: " + error.message;
+
+            } finally {
+
+                sendButton.disabled = false;
+
+                sendButton.textContent =
+                    "Perguntar ao Rizzler";
+
+            }
+
+        });
+
+    </script>
+
 </body>
 </html>
