@@ -27,7 +27,7 @@ app.get("/", (req, res) => {
 app.get("/api/test", async (req, res) => {
     try {
         const response = await openai.responses.create({
-            model: "llama-3.3-70b-versatile",
+           model: "openai/gpt-oss-20b",
             input: "Responde apenas: Rizzler AI está funcionando!"
         });
 
