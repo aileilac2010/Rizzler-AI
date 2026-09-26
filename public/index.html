@@ -2,38 +2,78 @@
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    >
 
     <title>Rizzler AI 🔥</title>
 
     <style>
+
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
 
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
         body {
             font-family: Arial, Helvetica, sans-serif;
             background: #0b0b0b;
             color: #f5f5f5;
+
+            /* Fallback */
+            min-height: 100vh;
+
+            /* Altura real do viewport em celulares */
+            min-height: 100dvh;
+
+            padding:
+                env(safe-area-inset-top)
+                env(safe-area-inset-right)
+                env(safe-area-inset-bottom)
+                env(safe-area-inset-left);
+        }
+
+
+        /* =====================================
+           APP
+        ===================================== */
+
+        .app {
+            width: 100%;
+            max-width: 900px;
             height: 100vh;
+            height: 100dvh;
+
+            margin: 0 auto;
+
+            display: flex;
+            flex-direction: column;
+
             overflow: hidden;
         }
 
-        .app {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            max-width: 900px;
-            margin: auto;
-        }
 
-        /* HEADER */
+        /* =====================================
+           HEADER
+        ===================================== */
 
         header {
-            padding: 20px;
+            flex-shrink: 0;
+
+            padding: 18px 20px;
+
             border-bottom: 1px solid #222;
+
             text-align: center;
         }
 
@@ -48,30 +88,77 @@
             margin-top: 4px;
         }
 
-        /* CHAT */
+
+        /* =====================================
+           CHAT
+        ===================================== */
 
         #chat {
             flex: 1;
+
+            min-height: 0;
+
             overflow-y: auto;
+            overflow-x: hidden;
+
             padding: 25px 18px;
+
+            -webkit-overflow-scrolling: touch;
+
+            scroll-behavior: smooth;
         }
+
+
+        #chat::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        #chat::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        #chat::-webkit-scrollbar-thumb {
+            background: #292929;
+            border-radius: 10px;
+        }
+
+
+        /* =====================================
+           WELCOME
+        ===================================== */
 
         .welcome {
             text-align: center;
+
             color: #777;
+
             margin-top: 20vh;
+
             font-size: 15px;
+
+            padding: 0 15px;
         }
 
         .welcome strong {
             display: block;
+
             color: #eee;
+
             font-size: 24px;
+
             margin-bottom: 8px;
         }
 
+
+        /* =====================================
+           MENSAGENS
+        ===================================== */
+
         .message {
             display: flex;
+
+            width: 100%;
+
             margin-bottom: 18px;
         }
 
@@ -81,154 +168,280 @@
 
         .bubble {
             max-width: 78%;
+
             padding: 12px 15px;
+
             border-radius: 18px;
+
             line-height: 1.5;
+
             font-size: 15px;
+
             white-space: pre-wrap;
-            word-wrap: break-word;
+
+            word-break: break-word;
+            overflow-wrap: anywhere;
         }
 
         .message.user .bubble {
             background: #252525;
+
             border-bottom-right-radius: 5px;
         }
 
         .message.ai .bubble {
             background: transparent;
+
             padding-left: 3px;
+
             color: #e8e8e8;
         }
 
+
+        /* =====================================
+           IMAGEM NA MENSAGEM
+        ===================================== */
+
         .image-message {
+            width: 100%;
             max-width: 240px;
+
             border-radius: 14px;
+
             display: block;
+
             margin-bottom: 8px;
         }
 
-        /* STYLES */
+
+        /* =====================================
+           ESTILOS
+        ===================================== */
 
         .styles {
+            flex-shrink: 0;
+
             display: flex;
+
             gap: 8px;
+
             overflow-x: auto;
-            padding: 10px 15px;
+
+            padding:
+                10px 15px;
+
             border-top: 1px solid #1c1c1c;
+
+            scrollbar-width: none;
+
+            -webkit-overflow-scrolling: touch;
         }
 
         .styles::-webkit-scrollbar {
             display: none;
         }
 
+
         .style-btn {
             flex-shrink: 0;
+
             border: 1px solid #292929;
+
             background: #111;
+
             color: #aaa;
+
             border-radius: 20px;
+
             padding: 8px 13px;
+
             cursor: pointer;
+
             font-size: 13px;
-            transition: 0.2s;
+
+            white-space: nowrap;
+
+            transition:
+                background 0.2s,
+                color 0.2s,
+                border 0.2s;
         }
 
         .style-btn:hover {
             background: #1d1d1d;
+
             color: white;
         }
 
         .style-btn.active {
             background: #eee;
+
             color: #111;
+
             border-color: #eee;
         }
 
-        /* IMAGE PREVIEW */
+
+        /* =====================================
+           PREVIEW DA IMAGEM
+        ===================================== */
 
         #imagePreview {
+            flex-shrink: 0;
+
             display: none;
+
             padding: 8px 15px;
+
             border-top: 1px solid #1c1c1c;
+
             position: relative;
         }
 
         #previewImage {
             width: 80px;
             height: 80px;
+
             object-fit: cover;
+
             border-radius: 12px;
+
             border: 1px solid #333;
         }
 
         #removeImage {
             position: absolute;
+
             top: 2px;
             left: 82px;
+
             width: 23px;
             height: 23px;
+
             border: none;
+
             border-radius: 50%;
+
             background: #333;
+
             color: white;
+
             cursor: pointer;
+
             font-size: 14px;
         }
 
-        /* INPUT */
+
+        /* =====================================
+           INPUT
+        ===================================== */
 
         .input-area {
-            padding: 12px 15px 18px;
+            flex-shrink: 0;
+
+            width: 100%;
+
+            padding:
+                10px 15px
+                calc(14px + env(safe-area-inset-bottom));
         }
 
+
         .input-box {
+            width: 100%;
+
             display: flex;
+
             align-items: flex-end;
+
             gap: 8px;
+
             background: #151515;
+
             border: 1px solid #292929;
+
             border-radius: 25px;
-            padding: 7px 8px 7px 10px;
+
+            padding:
+                7px 8px 7px 10px;
         }
+
 
         #messageInput {
             flex: 1;
+
+            min-width: 0;
+
             resize: none;
+
             border: none;
+
             outline: none;
+
             background: transparent;
+
             color: white;
+
             font-family: inherit;
+
             font-size: 15px;
+
             line-height: 1.4;
+
             max-height: 120px;
-            padding: 8px 4px;
+
+            padding:
+                8px 4px;
+
+            overflow-y: auto;
         }
 
         #messageInput::placeholder {
             color: #666;
         }
 
+
+        /* =====================================
+           BOTÕES
+        ===================================== */
+
         .icon-btn {
             width: 38px;
             height: 38px;
+
             flex-shrink: 0;
+
             border: none;
+
             border-radius: 50%;
+
             background: transparent;
+
             color: #aaa;
+
             font-size: 20px;
+
             cursor: pointer;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
         }
 
         .icon-btn:hover {
             background: #242424;
+
             color: white;
         }
 
+
         #sendBtn {
             background: #eee;
+
             color: #111;
+
             font-size: 20px;
         }
 
@@ -238,25 +451,33 @@
 
         #sendBtn:disabled {
             opacity: 0.4;
+
             cursor: default;
         }
+
 
         #imageInput {
             display: none;
         }
 
-        /* LOADING */
+
+        /* =====================================
+           LOADING
+        ===================================== */
 
         .loading {
             color: #777;
+
             font-size: 14px;
         }
 
         .loading span {
-            animation: blink 1.4s infinite;
+            animation:
+                blink 1.4s infinite;
         }
 
         @keyframes blink {
+
             0% {
                 opacity: 0.2;
             }
@@ -268,55 +489,162 @@
             100% {
                 opacity: 0.2;
             }
+
         }
 
-        /* MOBILE */
+
+        /* =====================================
+           CELULAR
+        ===================================== */
 
         @media (max-width: 600px) {
 
             header {
-                padding: 15px;
+                padding: 14px 15px;
             }
 
-            #chat {
-                padding: 20px 13px;
+            header h1 {
+                font-size: 20px;
             }
+
+            header p {
+                font-size: 12px;
+            }
+
+
+            #chat {
+                padding:
+                    20px 13px;
+            }
+
+
+            .welcome {
+                margin-top: 18vh;
+            }
+
 
             .bubble {
                 max-width: 88%;
+
+                font-size: 15px;
+            }
+
+
+            .styles {
+                padding:
+                    9px 10px;
+            }
+
+
+            .style-btn {
+                padding:
+                    7px 12px;
+
+                font-size: 12px;
+            }
+
+
+            #imagePreview {
+                padding:
+                    7px 10px;
+            }
+
+
+            .input-area {
+                padding:
+                    8px 10px
+                    calc(10px + env(safe-area-inset-bottom));
+            }
+
+
+            .input-box {
+                padding:
+                    6px 7px 6px 9px;
+            }
+
+
+            #messageInput {
+                font-size: 16px;
+            }
+
+        }
+
+
+        /* =====================================
+           TELAS MUITO PEQUENAS
+        ===================================== */
+
+        @media (max-height: 650px) {
+
+            header {
+                padding:
+                    9px 15px;
+            }
+
+            header h1 {
+                font-size: 18px;
+            }
+
+            header p {
+                display: none;
             }
 
             .styles {
-                padding-left: 10px;
-                padding-right: 10px;
+                padding:
+                    6px 10px;
             }
 
             .input-area {
-                padding: 8px 10px 12px;
+                padding-top: 6px;
             }
+
+            .welcome {
+                margin-top: 10vh;
+            }
+
         }
+
     </style>
 </head>
+
 
 <body>
 
 <div class="app">
 
-    <!-- HEADER -->
+
+    <!-- =====================================
+         HEADER
+    ====================================== -->
 
     <header>
-        <h1>Rizzler AI 🔥</h1>
-        <p>teu wingman digital</p>
+
+        <h1>
+            Rizzler AI 🔥
+        </h1>
+
+        <p>
+            teu wingman digital
+        </p>
+
     </header>
 
 
-    <!-- CHAT -->
+
+    <!-- =====================================
+         CHAT
+    ====================================== -->
 
     <main id="chat">
 
-        <div class="welcome" id="welcome">
+        <div
+            class="welcome"
+            id="welcome"
+        >
 
-            <strong>Rizzler AI 🔥</strong>
+            <strong>
+                Rizzler AI 🔥
+            </strong>
 
             Manda uma mensagem ou um screenshot
             e deixa comigo.
@@ -326,58 +654,93 @@
     </main>
 
 
-    <!-- STYLES -->
+
+    <!-- =====================================
+         ESTILOS
+    ====================================== -->
 
     <div class="styles">
 
-        <button class="style-btn active" data-style="natural">
+        <button
+            class="style-btn active"
+            data-style="natural"
+        >
             😌 Natural
         </button>
 
-        <button class="style-btn" data-style="confiante">
+        <button
+            class="style-btn"
+            data-style="confiante"
+        >
             😎 Confiante
         </button>
 
-        <button class="style-btn" data-style="engraçado">
+        <button
+            class="style-btn"
+            data-style="engraçado"
+        >
             😂 Engraçado
         </button>
 
-        <button class="style-btn" data-style="amigavel">
+        <button
+            class="style-btn"
+            data-style="amigavel"
+        >
             🙂 Amigável
         </button>
 
-        <button class="style-btn" data-style="romantico">
+        <button
+            class="style-btn"
+            data-style="romantico"
+        >
             ❤️ Romântico
         </button>
 
-        <button class="style-btn" data-style="atrevido">
+        <button
+            class="style-btn"
+            data-style="atrevido"
+        >
             😏 Atrevido
         </button>
 
-        <button class="style-btn" data-style="direto">
+        <button
+            class="style-btn"
+            data-style="direto"
+        >
             🎯 Direto
         </button>
 
     </div>
 
 
-    <!-- IMAGE PREVIEW -->
 
-    <div id="imagePreview">
+    <!-- =====================================
+         IMAGE PREVIEW
+    ====================================== -->
+
+    <div
+        id="imagePreview"
+    >
 
         <img
             id="previewImage"
             alt="Imagem selecionada"
         >
 
-        <button id="removeImage">
+        <button
+            id="removeImage"
+            type="button"
+        >
             ×
         </button>
 
     </div>
 
 
-    <!-- INPUT -->
+
+    <!-- =====================================
+         INPUT
+    ====================================== -->
 
     <div class="input-area">
 
@@ -386,10 +749,12 @@
             <button
                 class="icon-btn"
                 id="attachBtn"
+                type="button"
                 title="Enviar imagem"
             >
                 📎
             </button>
+
 
             <input
                 type="file"
@@ -397,15 +762,19 @@
                 accept="image/*"
             >
 
+
             <textarea
                 id="messageInput"
                 rows="1"
                 placeholder="Manda a mensagem..."
+                autocomplete="off"
             ></textarea>
+
 
             <button
                 class="icon-btn"
                 id="sendBtn"
+                type="button"
                 title="Enviar"
             >
                 ↑
@@ -418,47 +787,69 @@
 </div>
 
 
+
 <script>
+
 
     // ==========================================
     // ELEMENTOS
     // ==========================================
 
     const chat =
-        document.getElementById("chat");
+        document.getElementById(
+            "chat"
+        );
 
     const welcome =
-        document.getElementById("welcome");
+        document.getElementById(
+            "welcome"
+        );
 
     const messageInput =
-        document.getElementById("messageInput");
+        document.getElementById(
+            "messageInput"
+        );
 
     const sendBtn =
-        document.getElementById("sendBtn");
+        document.getElementById(
+            "sendBtn"
+        );
 
     const attachBtn =
-        document.getElementById("attachBtn");
+        document.getElementById(
+            "attachBtn"
+        );
 
     const imageInput =
-        document.getElementById("imageInput");
+        document.getElementById(
+            "imageInput"
+        );
 
     const imagePreview =
-        document.getElementById("imagePreview");
+        document.getElementById(
+            "imagePreview"
+        );
 
     const previewImage =
-        document.getElementById("previewImage");
+        document.getElementById(
+            "previewImage"
+        );
 
     const removeImage =
-        document.getElementById("removeImage");
+        document.getElementById(
+            "removeImage"
+        );
 
 
     // ==========================================
     // ESTADO
     // ==========================================
 
-    let selectedStyle = "natural";
+    let selectedStyle =
+        "natural";
 
-    let selectedImage = null;
+    let selectedImage =
+        null;
 
 
     // ==========================================
@@ -466,7 +857,9 @@
     // ==========================================
 
     document
-        .querySelectorAll(".style-btn")
+        .querySelectorAll(
+            ".style-btn"
+        )
         .forEach(button => {
 
             button.addEventListener(
@@ -474,12 +867,20 @@
                 () => {
 
                     document
-                        .querySelectorAll(".style-btn")
-                        .forEach(btn =>
-                            btn.classList.remove("active")
-                        );
+                        .querySelectorAll(
+                            ".style-btn"
+                        )
+                        .forEach(btn => {
 
-                    button.classList.add("active");
+                            btn.classList.remove(
+                                "active"
+                            );
+
+                        });
+
+                    button.classList.add(
+                        "active"
+                    );
 
                     selectedStyle =
                         button.dataset.style;
@@ -517,14 +918,20 @@
                     new FileReader();
 
                 reader.onload =
-                    () => resolve(
-                        reader.result
-                    );
+                    () => {
+
+                        resolve(
+                            reader.result
+                        );
+
+                    };
 
                 reader.onerror =
                     reject;
 
-                reader.readAsDataURL(file);
+                reader.readAsDataURL(
+                    file
+                );
 
             }
         );
@@ -547,25 +954,37 @@
                 return;
             }
 
-            if (!file.type.startsWith("image/")) {
+
+            if (
+                !file.type.startsWith(
+                    "image/"
+                )
+            ) {
 
                 alert(
                     "Seleciona uma imagem."
                 );
 
                 return;
+
             }
+
 
             try {
 
                 selectedImage =
-                    await fileToDataURL(file);
+                    await fileToDataURL(
+                        file
+                    );
+
 
                 previewImage.src =
                     selectedImage;
 
+
                 imagePreview.style.display =
                     "block";
+
 
             } catch (error) {
 
@@ -592,11 +1011,14 @@
         "click",
         () => {
 
-            selectedImage = null;
+            selectedImage =
+                null;
 
-            imageInput.value = "";
+            imageInput.value =
+                "";
 
-            previewImage.src = "";
+            previewImage.src =
+                "";
 
             imagePreview.style.display =
                 "none";
@@ -606,7 +1028,7 @@
 
 
     // ==========================================
-    // ADICIONAR MENSAGEM AO CHAT
+    // ADICIONAR MENSAGEM
     // ==========================================
 
     function addMessage(
@@ -622,15 +1044,20 @@
 
         }
 
+
         const message =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
 
         message.className =
             `message ${type}`;
 
 
         const bubble =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
 
         bubble.className =
             "bubble";
@@ -641,9 +1068,12 @@
         if (image) {
 
             const img =
-                document.createElement("img");
+                document.createElement(
+                    "img"
+                );
 
-            img.src = image;
+            img.src =
+                image;
 
             img.className =
                 "image-message";
@@ -651,7 +1081,9 @@
             img.alt =
                 "Imagem enviada";
 
-            bubble.appendChild(img);
+            bubble.appendChild(
+                img
+            );
 
         }
 
@@ -661,7 +1093,9 @@
         if (text) {
 
             const textElement =
-                document.createElement("div");
+                document.createElement(
+                    "div"
+                );
 
             textElement.textContent =
                 text;
@@ -682,8 +1116,14 @@
         );
 
 
-        chat.scrollTop =
-            chat.scrollHeight;
+        requestAnimationFrame(
+            () => {
+
+                chat.scrollTop =
+                    chat.scrollHeight;
+
+            }
+        );
 
     }
 
@@ -695,7 +1135,9 @@
     function addLoading() {
 
         const message =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
 
         message.className =
             "message ai";
@@ -705,7 +1147,9 @@
 
 
         const bubble =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
 
         bubble.className =
             "bubble loading";
@@ -746,7 +1190,7 @@
 
 
     // ==========================================
-    // ENVIAR MENSAGEM
+    // ENVIAR
     // ==========================================
 
     async function sendMessage() {
@@ -754,8 +1198,6 @@
         const message =
             messageInput.value.trim();
 
-
-        // Não envia vazio
 
         if (
             !message &&
@@ -767,13 +1209,11 @@
         }
 
 
-        // Guardar imagem antes de limpar
-
         const imageData =
             selectedImage;
 
 
-        // Mostrar no chat
+        // Mostrar mensagem do usuário
 
         addMessage(
             message,
@@ -782,37 +1222,43 @@
         );
 
 
-        // Limpar interface
+        // Limpar input
 
-        messageInput.value = "";
+        messageInput.value =
+            "";
 
-        selectedImage = null;
+        messageInput.style.height =
+            "auto";
 
-        imageInput.value = "";
+
+        selectedImage =
+            null;
+
+        imageInput.value =
+            "";
 
         imagePreview.style.display =
             "none";
 
-        previewImage.src = "";
+        previewImage.src =
+            "";
 
 
         addLoading();
 
-        sendBtn.disabled = true;
+        sendBtn.disabled =
+            true;
 
 
         try {
-
-            // ==================================
-            // ENVIAR TEXTO + IMAGEM
-            // ==================================
 
             const response =
                 await fetch(
                     "/api/chat",
                     {
 
-                        method: "POST",
+                        method:
+                            "POST",
 
                         headers: {
 
@@ -831,7 +1277,8 @@
                                     selectedStyle,
 
                                 image:
-                                    imageData || null
+                                    imageData ||
+                                    null
 
                             })
 
@@ -858,10 +1305,6 @@
 
             }
 
-
-            // ==================================
-            // RESPOSTA DA IA
-            // ==================================
 
             addMessage(
                 data.response,
@@ -930,7 +1373,7 @@
 
 
     // ==========================================
-    // AUTO-RESIZE
+    // AUTO RESIZE DO TEXTAREA
     // ==========================================
 
     messageInput.addEventListener(
@@ -940,6 +1383,7 @@
             messageInput.style.height =
                 "auto";
 
+
             messageInput.style.height =
                 Math.min(
                     messageInput.scrollHeight,
@@ -948,6 +1392,32 @@
 
         }
     );
+
+
+    // ==========================================
+    // TECLADO DO CELULAR
+    // ==========================================
+
+    if (window.visualViewport) {
+
+        window.visualViewport.addEventListener(
+            "resize",
+            () => {
+
+                requestAnimationFrame(
+                    () => {
+
+                        chat.scrollTop =
+                            chat.scrollHeight;
+
+                    }
+                );
+
+            }
+        );
+
+    }
+
 
 </script>
 
